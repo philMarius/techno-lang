@@ -9,3 +9,7 @@ type tech =
   | TDivide of tech * tech
   | TExpo of tech * tech
   | TMod of tech * tech
+
+val typeProg : tech -> technoType
+val evalProg : tech -> tech
+val print_res : tech -> unit

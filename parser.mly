@@ -17,14 +17,15 @@
 %type <Techno.technoType> type
 %%
 parser_main:
-	expr EOF		{ $1 }
+	| expr EOF					{ $1 }
 ;
 type:
 	| INT_TYPE					{ TechnoInt }
 	| BOOL_TYPE					{ TechnoBool }
-	| LPAREN type RPAREN	{ $2 }
+	| LPAREN type RPAREN		{ $2 }
+;
 expr:
-		INT						{ TNum $1 }
+	| INT						{ TNum $1 }
 	| LPAREN expr RPAREN 		{ $2 }
 	| expr PLUS expr 			{ TPlus($1, $3) }
 	| expr MINUS expr 			{ TMinus($1, $3) }
@@ -32,5 +33,5 @@ expr:
 	| expr DIVIDE expr			{ TDivide($1, $3) }
 	| expr EXPO expr			{ TExpo($1, $3) }
 	| expr MOD expr				{ TMod($1, $3) }
-	/*| MINUS expr %prec UMINUS	{ TNum (- $2) }*/
+	| expr EOF 					{ $1 }
 ;
