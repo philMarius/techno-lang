@@ -2,16 +2,14 @@
 %{
 	open Techno
 %}
-
 %token <int> INT
-%token PLUS MINUS MULTIPLY DIVIDE
+%token PLUS MINUS MULTIPLY DIVIDE EXPO MOD
 %token LPAREN RPAREN
-%token EOF EXPO MOD
 %token INT_TYPE BOOL_TYPE
+%token EOF
 %left PLUS MINUS
 %left MULTIPLY DIVIDE
 %left EXPO MOD
-%nonassoc UMINUS
 %start parser_main
 %type <Techno.tech> parser_main
 %type <Techno.technoType> type
@@ -21,7 +19,6 @@ parser_main:
 ;
 type:
 	| INT_TYPE					{ TechnoInt }
-	| BOOL_TYPE					{ TechnoBool }
 	| LPAREN type RPAREN		{ $2 }
 ;
 expr:
@@ -33,5 +30,4 @@ expr:
 	| expr DIVIDE expr			{ TDivide($1, $3) }
 	| expr EXPO expr			{ TExpo($1, $3) }
 	| expr MOD expr				{ TMod($1, $3) }
-	| expr EOF 					{ $1 }
 ;

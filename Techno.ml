@@ -1,4 +1,5 @@
 (* File Techno.ml *)
+
 exception LookupError ;;
 exception TypeError ;;
 exception Terminated ;;
@@ -9,7 +10,7 @@ exception StuckTerm ;;
 open Printf;;
 
 (* Types of the Techno language *)
-type technoType = TechnoInt | TechnoBool | TechnoFun of technoType * technoType
+type technoType = TechnoInt | TechnoBool
 
 (* Grammar of the Techno language *)
 type tech =
@@ -76,7 +77,7 @@ let rec typeOf e =
         (match (typeOf e1), (typeOf e2) with
         | TechnoInt, TechnoInt -> TechnoInt
         | _ -> raise TypeError)
-    (* | _ -> raise TypeError *)
+    | _ -> raise TypeError
 ;;
 
 (* Begins evaluation of terms *)
@@ -89,11 +90,28 @@ let rec eval e =
     | (TBool b) -> raise Terminated
 
     | (TPlus(TNum(n), TNum(m))) -> (TNum( n + m ))
+    | (TPlus(TNum(n), e2)) -> let (e2') = (eval e2) in (TPlus(TNum(n),e2'))
+    | (TPlus(e1,e2)) -> let (e1') = (eval e1) in (TPlus(e1', e2))
+
     | (TMinus(TNum(n), TNum(m))) -> (TNum( n - m ))
+    | (TMinus(TNum(n), e2)) -> let (e2') = (eval e2) in (TMinus(TNum(n),e2'))
+    | (TMinus(e1,e2)) -> let (e1') = (eval e1) in (TMinus(e1', e2))
+
     | (TMultiply(TNum(n), TNum(m))) -> (TNum( n * m ))
+    | (TMultiply(TNum(n), e2)) -> let (e2') = (eval e2) in (TMultiply(TNum(n),e2'))
+    | (TMultiply(e1,e2)) -> let (e1') = (eval e1) in (TMultiply(e1', e2))
+
     | (TDivide(TNum(n), TNum(m))) -> (TNum( n / m ))
+    | (TDivide(TNum(n), e2)) -> let (e2') = (eval e2) in (TDivide(TNum(n),e2'))
+    | (TDivide(e1,e2)) -> let (e1') = (eval e1) in (TDivide(e1', e2))
+
     | (TExpo(TNum(n), TNum(m))) -> (TNum( expoInt n m ))
+    | (TExpo(TNum(n), e2)) -> let (e2') = (eval e2) in (TExpo(TNum(n),e2'))
+    | (TExpo(e1,e2)) -> let (e1') = (eval e1) in (TExpo(e1', e2))
+
     | (TMod(TNum(n), TNum(m))) ->(TNum(n mod m))
+    | (TMod(TNum(n), e2)) -> let (e2') = (eval e2) in (TMod(TNum(n),e2'))
+    | (TMod(e1,e2)) -> let (e1') = (eval e1) in (TMod(e1', e2))
 
     | _ -> raise Terminated
 ;;
@@ -110,7 +128,7 @@ let rec evalloop e =
     raise StuckTerm
 ;;
 
-let evalProg e = evalloop e;;
+let evalProg e = evalloop e;; (* <== Starts here *)
 
 (* Printing methods *)
 let rec type_to_string tT =

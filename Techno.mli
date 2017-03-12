@@ -1,4 +1,6 @@
-type technoType = TechnoInt | TechnoBool | TechnoFun of technoType * technoType
+(* Header file for Techno.ml *)
+
+type technoType = TechnoInt | TechnoBool
 
 type tech =
   TNum of int

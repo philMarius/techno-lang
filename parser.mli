@@ -4,13 +4,13 @@ type token =
   | MINUS
   | MULTIPLY
   | DIVIDE
-  | LPAREN
-  | RPAREN
-  | EOF
   | EXPO
   | MOD
+  | LPAREN
+  | RPAREN
   | INT_TYPE
   | BOOL_TYPE
+  | EOF
 
 val parser_main :
   (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Techno.tech
