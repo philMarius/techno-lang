@@ -1,24 +1,36 @@
 /* File parser.mly */
 %{
-	(* TODO add that line from that other file *)
+	open Techno
 %}
 
 %token <int> INT
 %token PLUS MINUS MULTIPLY DIVIDE
 %token LPAREN RPAREN
-%token EOL EXPO MOD
+%token EOF EXPO MOD
+%token INT_TYPE BOOL_TYPE
 %left PLUS MINUS
 %left MULTIPLY DIVIDE
 %left EXPO MOD
 %nonassoc UMINUS
-%start main
-%type <int> main
+%start parser_main
+%type <Techno.tech> parser_main
+%type <Techno.technoType> type
 %%
-main:
-		expr EOF		{ $1 }
-	;
-	expr:
-		INT					{ $1 }
-	| LPAREN expr RPAREN 	{ $2 }
-	| expr PLUS expr 		{ $1 + $3 }
-	| expr MINUS expr 		{ $1 - $3 }
+parser_main:
+	expr EOF		{ $1 }
+;
+type:
+	| INT_TYPE					{ TechnoInt }
+	| BOOL_TYPE					{ TechnoBool }
+	| LPAREN type RPAREN	{ $2 }
+expr:
+		INT						{ TNum $1 }
+	| LPAREN expr RPAREN 		{ $2 }
+	| expr PLUS expr 			{ TPlus($1, $3) }
+	| expr MINUS expr 			{ TMinus($1, $3) }
+	| expr MULTIPLY expr		{ TMultiply($1, $3) }
+	| expr DIVIDE expr			{ TDivide($1, $3) }
+	| expr EXPO expr			{ TExpo($1, $3) }
+	| expr MOD expr				{ TMod($1, $3) }
+	/*| MINUS expr %prec UMINUS	{ TNum (- $2) }*/
+;

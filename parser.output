@@ -1,0 +1,285 @@
+   0  $accept : %entry% $end
+
+   1  parser_main : expr EOF
+
+   2  type : INT_TYPE
+   3       | BOOL_TYPE
+   4       | LPAREN type RPAREN
+
+   5  expr : INT
+   6       | LPAREN expr RPAREN
+   7       | expr PLUS expr
+   8       | expr MINUS expr
+   9       | expr MULTIPLY expr
+  10       | expr DIVIDE expr
+  11       | expr EXPO expr
+  12       | expr MOD expr
+
+  13  %entry% : '\001' parser_main
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . parser_main  (13)
+
+	INT  shift 3
+	LPAREN  shift 4
+	.  error
+
+	parser_main  goto 5
+	expr  goto 6
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	expr : INT .  (5)
+
+	.  reduce 5
+
+
+state 4
+	expr : LPAREN . expr RPAREN  (6)
+
+	INT  shift 3
+	LPAREN  shift 4
+	.  error
+
+	expr  goto 7
+
+
+state 5
+	%entry% : '\001' parser_main .  (13)
+
+	.  reduce 13
+
+
+state 6
+	parser_main : expr . EOF  (1)
+	expr : expr . PLUS expr  (7)
+	expr : expr . MINUS expr  (8)
+	expr : expr . MULTIPLY expr  (9)
+	expr : expr . DIVIDE expr  (10)
+	expr : expr . EXPO expr  (11)
+	expr : expr . MOD expr  (12)
+
+	PLUS  shift 8
+	MINUS  shift 9
+	MULTIPLY  shift 10
+	DIVIDE  shift 11
+	EOF  shift 12
+	EXPO  shift 13
+	MOD  shift 14
+	.  error
+
+
+state 7
+	expr : LPAREN expr . RPAREN  (6)
+	expr : expr . PLUS expr  (7)
+	expr : expr . MINUS expr  (8)
+	expr : expr . MULTIPLY expr  (9)
+	expr : expr . DIVIDE expr  (10)
+	expr : expr . EXPO expr  (11)
+	expr : expr . MOD expr  (12)
+
+	PLUS  shift 8
+	MINUS  shift 9
+	MULTIPLY  shift 10
+	DIVIDE  shift 11
+	RPAREN  shift 15
+	EXPO  shift 13
+	MOD  shift 14
+	.  error
+
+
+state 8
+	expr : expr PLUS . expr  (7)
+
+	INT  shift 3
+	LPAREN  shift 4
+	.  error
+
+	expr  goto 16
+
+
+state 9
+	expr : expr MINUS . expr  (8)
+
+	INT  shift 3
+	LPAREN  shift 4
+	.  error
+
+	expr  goto 17
+
+
+state 10
+	expr : expr MULTIPLY . expr  (9)
+
+	INT  shift 3
+	LPAREN  shift 4
+	.  error
+
+	expr  goto 18
+
+
+state 11
+	expr : expr DIVIDE . expr  (10)
+
+	INT  shift 3
+	LPAREN  shift 4
+	.  error
+
+	expr  goto 19
+
+
+state 12
+	parser_main : expr EOF .  (1)
+
+	.  reduce 1
+
+
+state 13
+	expr : expr EXPO . expr  (11)
+
+	INT  shift 3
+	LPAREN  shift 4
+	.  error
+
+	expr  goto 20
+
+
+state 14
+	expr : expr MOD . expr  (12)
+
+	INT  shift 3
+	LPAREN  shift 4
+	.  error
+
+	expr  goto 21
+
+
+state 15
+	expr : LPAREN expr RPAREN .  (6)
+
+	.  reduce 6
+
+
+state 16
+	expr : expr . PLUS expr  (7)
+	expr : expr PLUS expr .  (7)
+	expr : expr . MINUS expr  (8)
+	expr : expr . MULTIPLY expr  (9)
+	expr : expr . DIVIDE expr  (10)
+	expr : expr . EXPO expr  (11)
+	expr : expr . MOD expr  (12)
+
+	MULTIPLY  shift 10
+	DIVIDE  shift 11
+	EXPO  shift 13
+	MOD  shift 14
+	PLUS  reduce 7
+	MINUS  reduce 7
+	RPAREN  reduce 7
+	EOF  reduce 7
+
+
+state 17
+	expr : expr . PLUS expr  (7)
+	expr : expr . MINUS expr  (8)
+	expr : expr MINUS expr .  (8)
+	expr : expr . MULTIPLY expr  (9)
+	expr : expr . DIVIDE expr  (10)
+	expr : expr . EXPO expr  (11)
+	expr : expr . MOD expr  (12)
+
+	MULTIPLY  shift 10
+	DIVIDE  shift 11
+	EXPO  shift 13
+	MOD  shift 14
+	PLUS  reduce 8
+	MINUS  reduce 8
+	RPAREN  reduce 8
+	EOF  reduce 8
+
+
+state 18
+	expr : expr . PLUS expr  (7)
+	expr : expr . MINUS expr  (8)
+	expr : expr . MULTIPLY expr  (9)
+	expr : expr MULTIPLY expr .  (9)
+	expr : expr . DIVIDE expr  (10)
+	expr : expr . EXPO expr  (11)
+	expr : expr . MOD expr  (12)
+
+	EXPO  shift 13
+	MOD  shift 14
+	PLUS  reduce 9
+	MINUS  reduce 9
+	MULTIPLY  reduce 9
+	DIVIDE  reduce 9
+	RPAREN  reduce 9
+	EOF  reduce 9
+
+
+state 19
+	expr : expr . PLUS expr  (7)
+	expr : expr . MINUS expr  (8)
+	expr : expr . MULTIPLY expr  (9)
+	expr : expr . DIVIDE expr  (10)
+	expr : expr DIVIDE expr .  (10)
+	expr : expr . EXPO expr  (11)
+	expr : expr . MOD expr  (12)
+
+	EXPO  shift 13
+	MOD  shift 14
+	PLUS  reduce 10
+	MINUS  reduce 10
+	MULTIPLY  reduce 10
+	DIVIDE  reduce 10
+	RPAREN  reduce 10
+	EOF  reduce 10
+
+
+state 20
+	expr : expr . PLUS expr  (7)
+	expr : expr . MINUS expr  (8)
+	expr : expr . MULTIPLY expr  (9)
+	expr : expr . DIVIDE expr  (10)
+	expr : expr . EXPO expr  (11)
+	expr : expr EXPO expr .  (11)
+	expr : expr . MOD expr  (12)
+
+	.  reduce 11
+
+
+state 21
+	expr : expr . PLUS expr  (7)
+	expr : expr . MINUS expr  (8)
+	expr : expr . MULTIPLY expr  (9)
+	expr : expr . DIVIDE expr  (10)
+	expr : expr . EXPO expr  (11)
+	expr : expr . MOD expr  (12)
+	expr : expr MOD expr .  (12)
+
+	.  reduce 12
+
+
+Rules never reduced:
+	type : INT_TYPE  (2)
+	type : BOOL_TYPE  (3)
+	type : LPAREN type RPAREN  (4)
+
+
+16 terminals, 5 nonterminals
+14 grammar rules, 22 states

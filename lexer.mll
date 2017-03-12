@@ -1,12 +1,13 @@
 (* File lexer.mll *)
 {
-	(* TODO add "open Parser" *)
+	open Parser
 }
 
 rule lexer_main = parse
-	[' ' '\t' '\n'] 		{ lexer_main lexbuf } 	(* skips blanks *)
-	| ['0'-'9'] as lxm 		{ INT(int_of_string lxm) }
-	| "int"		{ INT }
+	| [' ' '\t' '\n'] 		{ lexer_main lexbuf }
+	| ['0'-'9']+ as lxm 		{ INT(int_of_string lxm) }
+	| "int"		{ INT_TYPE }
+	| "bool"	{ BOOL_TYPE}
 
 	| '+'		{ PLUS }
     | '-'		{ MINUS }
@@ -16,4 +17,5 @@ rule lexer_main = parse
     | ')'		{ RPAREN }
     | '^'		{ EXPO }
     | '%'		{ MOD }
+
 	| eof		{ EOF }
