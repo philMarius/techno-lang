@@ -1,5 +1,6 @@
 type token =
   | INT of (int)
+  | STRING of (string)
   | PLUS
   | MINUS
   | MULTIPLY
@@ -8,9 +9,16 @@ type token =
   | MOD
   | LPAREN
   | RPAREN
+  | DELIM
+  | UNION
+  | LSETPAREN
+  | RSETPAREN
   | INT_TYPE
   | BOOL_TYPE
+  | TRUE
+  | FALSE
   | EOF
+  | EOL
 
 val parser_main :
   (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Techno.tech
