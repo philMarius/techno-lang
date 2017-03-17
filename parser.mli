@@ -1,6 +1,7 @@
 type token =
   | INT of (int)
   | STRING of (string)
+  | LANGUAGE of (string)
   | PLUS
   | MINUS
   | MULTIPLY

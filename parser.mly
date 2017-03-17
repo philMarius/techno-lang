@@ -4,6 +4,7 @@
 %}
 %token <int> INT
 %token <string> STRING
+%token <string> LANGUAGE
 %token PLUS MINUS MULTIPLY DIVIDE EXPO MOD
 %token LPAREN RPAREN
 %token STRING DELIM
@@ -31,7 +32,7 @@ expr:
 	| INT							{ TNum $1 }
 	| TRUE							{ TBool true }
 	| STRING						{ TString $1 }
-	| LSETPAREN set_type RSETPAREN	{ TSet $2 }
+	| LANGUAGE						{ TSet $1 }
 	| FALSE							{ TBool false }
 	| LPAREN expr RPAREN 			{ $2 }
 	| expr PLUS expr 				{ TPlus($1, $3) }
@@ -41,8 +42,4 @@ expr:
 	| expr EXPO expr				{ TExpo($1, $3) }
 	| expr MOD expr					{ TMod($1, $3) }
 	| expr UNION expr				{ TUnion($1, $3) }
-;
-set_type:
-	| expr DELIM set_type			{ TLinkSet($1, $3) }
-	| expr							{ TValue($1) }
 ;
