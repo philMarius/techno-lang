@@ -8,31 +8,27 @@ exception NonBaseTypeResult ;;
 exception StuckTerm ;;
 
 open Printf;;
+open Str;;
 
 (* Types of the Techno language *)
 type technoType =
   | TechnoInt
   | TechnoBool
   | TechnoString
-  | TechnoLinkSet
   | TechnoSet
-
-type 'a set = 'a list
 
 (* Grammar of the Techno language *)
 type tech =
   | TNum of int
   | TBool of bool
   | TString of string
-  | TValue of tech list
-  | TLinkSet of tech * tech
   | TPlus of tech * tech
   | TMinus of tech * tech
   | TMultiply of tech * tech
   | TDivide of tech * tech
   | TExpo of tech * tech
   | TMod of tech * tech
-  | TSet of set
+  | TSet of string
   | TUnion of tech * tech
 
 let rec isValue e =
@@ -47,7 +43,8 @@ let rec isValue e =
 
 (* Checks whether a given number is even *)
 let isEven n =
-  n mod 2 = 0;;
+  n mod 2 = 0
+;;
 
 (* Exponential function for integers *)
 let rec expoInt base power =
@@ -60,8 +57,42 @@ let rec expoInt base power =
       | e when isEven e -> aux acc (base * base) (e/2)
       | e -> aux (base * acc) (base * base) ((e-1)/2)
     in
-    aux 1 base power;;
+    aux 1 base power
+;;
 
+let rec appendToList l i =
+  match l with
+  | [] -> [i]
+  | h :: t -> h :: (appendToList t i)
+;;
+
+(* let rec str_to_lst string =
+	let read i list =
+		if (i < 0)
+		then list
+		else read (i-1) (s.[i] :: list)
+	in read ((String.length s) - 1) []
+;; *)
+
+(* let rec gen_lst aux_list =
+	| [] -> aux_list
+	| '{' :: t -> gen_lst aux_list t
+	| '}' :: t -> aux_list
+	| ',' :: t -> gen_lst aux_list t
+	| ' ' :: t -> gen_lst aux_list t
+	| h :: t ->
+;; *)
+
+let rm_set_right s =
+	Str.global_replace (Str.regexp "{") "" s;;
+
+let rm_set_left s =
+	Str.global_replace (Str.regexp "}") "" s;;
+
+let str_to_lst str =
+	let rm_paren str =
+		rm_set_left (rm_set_right str)
+	in Str.split (Str.regexp ",") (rm_paren str);;
 
 (*==== Type checking function ====*)
 let rec typeOf e =
@@ -69,12 +100,7 @@ let rec typeOf e =
     | TNum(n) -> TechnoInt
     | TBool(b) -> TechnoBool
     | TString(s) -> TechnoString
-    | TSet(s) -> TechnoLinkSet
-    | TLinkSet(v,s) -> TechnoLinkSet
-    | TValue(v) ->
-        (match v with
-        | List -> List
-        | _ -> raise TypeError)
+		| TSet(e1) -> TechnoSet
     | TPlus(e1,e2) ->
         (match (typeOf e1), (typeOf e2) with
         | TechnoInt, TechnoInt -> TechnoInt
@@ -106,17 +132,16 @@ let rec typeOf e =
     | _ -> raise TypeError
 
 
-(* Begins evaluation of terms *)
+(*==== Begins evaluation of terms ====*)
 let typeProg e = typeOf e ;;
 
-(* Machine anlaysis method *)
+(*==== Machine anlaysis method ====*)
 let rec eval e =
   match e with
     | (TNum n) -> raise Terminated
     | (TBool b) -> raise Terminated
     | (TString s) -> raise Terminated
-
-    | (TSet (TValue(v))) -> ()
+    | (TSet(x)) -> (TSet(x))
 
     | (TPlus(TNum(n), TNum(m))) -> (TNum( n + m ))
     | (TPlus(TNum(n), e2)) -> let (e2') = (eval e2) in (TPlus(TNum(n),e2'))

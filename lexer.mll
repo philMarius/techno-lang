@@ -7,6 +7,7 @@
 rule lexer_main = parse
 	| [' ' '\t' '\n'] 		{ lexer_main lexbuf }
 	| ['0'-'9']+ as lxm 	{ INT(int_of_string lxm) }
+	| '{'(' '*(['a'-'z']+|':')' '*','' '*)*(['a'-'z']+|':')?' '*'}' as lxm		{ LANGUAGE(lxm) }
 	| "int"					{ INT_TYPE }
 	| "bool"				{ BOOL_TYPE }
 	| "true"				{ TRUE }
@@ -19,10 +20,6 @@ rule lexer_main = parse
     | ')'					{ RPAREN }
     | '^'					{ EXPO }
     | '%'					{ MOD }
-	| '{'					{ LSETPAREN }	(* Set functions *)
-	| '}'					{ RSETPAREN }
-	| ['a'-'z']+ as lxm		{ STRING(lxm) }
-	| ','					{ DELIM }
 	| 'U'					{ UNION }
 	| ';'					{ EOL }			(* EOL and EOF functions *)
 	| eof					{ raise Eof }

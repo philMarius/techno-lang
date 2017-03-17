@@ -9,7 +9,7 @@
    5  expr : INT
    6       | TRUE
    7       | STRING
-   8       | LSETPAREN set_type RSETPAREN
+   8       | LANGUAGE
    9       | FALSE
   10       | LPAREN expr RPAREN
   11       | expr PLUS expr
@@ -20,10 +20,7 @@
   16       | expr MOD expr
   17       | expr UNION expr
 
-  18  set_type : expr DELIM set_type
-  19           | expr
-
-  20  %entry% : '\001' parser_main
+  18  %entry% : '\001' parser_main
 
 state 0
 	$accept : . %entry% $end  (0)
@@ -35,12 +32,12 @@ state 0
 
 
 state 1
-	%entry% : '\001' . parser_main  (20)
+	%entry% : '\001' . parser_main  (18)
 
 	INT  shift 3
 	STRING  shift 4
-	LPAREN  shift 5
-	LSETPAREN  shift 6
+	LANGUAGE  shift 5
+	LPAREN  shift 6
 	TRUE  shift 7
 	FALSE  shift 8
 	.  error
@@ -68,32 +65,23 @@ state 4
 
 
 state 5
+	expr : LANGUAGE .  (8)
+
+	.  reduce 8
+
+
+state 6
 	expr : LPAREN . expr RPAREN  (10)
 
 	INT  shift 3
 	STRING  shift 4
-	LPAREN  shift 5
-	LSETPAREN  shift 6
+	LANGUAGE  shift 5
+	LPAREN  shift 6
 	TRUE  shift 7
 	FALSE  shift 8
 	.  error
 
 	expr  goto 11
-
-
-state 6
-	expr : LSETPAREN . set_type RSETPAREN  (8)
-
-	INT  shift 3
-	STRING  shift 4
-	LPAREN  shift 5
-	LSETPAREN  shift 6
-	TRUE  shift 7
-	FALSE  shift 8
-	.  error
-
-	expr  goto 12
-	set_type  goto 13
 
 
 state 7
@@ -109,9 +97,9 @@ state 8
 
 
 state 9
-	%entry% : '\001' parser_main .  (20)
+	%entry% : '\001' parser_main .  (18)
 
-	.  reduce 20
+	.  reduce 18
 
 
 state 10
@@ -124,14 +112,14 @@ state 10
 	expr : expr . MOD expr  (16)
 	expr : expr . UNION expr  (17)
 
-	PLUS  shift 14
-	MINUS  shift 15
-	MULTIPLY  shift 16
-	DIVIDE  shift 17
-	EXPO  shift 18
-	MOD  shift 19
-	UNION  shift 20
-	EOL  shift 21
+	PLUS  shift 12
+	MINUS  shift 13
+	MULTIPLY  shift 14
+	DIVIDE  shift 15
+	EXPO  shift 16
+	MOD  shift 17
+	UNION  shift 18
+	EOL  shift 19
 	.  error
 
 
@@ -145,53 +133,80 @@ state 11
 	expr : expr . MOD expr  (16)
 	expr : expr . UNION expr  (17)
 
-	PLUS  shift 14
-	MINUS  shift 15
-	MULTIPLY  shift 16
-	DIVIDE  shift 17
-	EXPO  shift 18
-	MOD  shift 19
-	RPAREN  shift 22
-	UNION  shift 20
+	PLUS  shift 12
+	MINUS  shift 13
+	MULTIPLY  shift 14
+	DIVIDE  shift 15
+	EXPO  shift 16
+	MOD  shift 17
+	RPAREN  shift 20
+	UNION  shift 18
 	.  error
 
 
 state 12
-	expr : expr . PLUS expr  (11)
-	expr : expr . MINUS expr  (12)
-	expr : expr . MULTIPLY expr  (13)
-	expr : expr . DIVIDE expr  (14)
-	expr : expr . EXPO expr  (15)
-	expr : expr . MOD expr  (16)
-	expr : expr . UNION expr  (17)
-	set_type : expr . DELIM set_type  (18)
-	set_type : expr .  (19)
-
-	PLUS  shift 14
-	MINUS  shift 15
-	MULTIPLY  shift 16
-	DIVIDE  shift 17
-	EXPO  shift 18
-	MOD  shift 19
-	DELIM  shift 23
-	UNION  shift 20
-	RSETPAREN  reduce 19
-
-
-state 13
-	expr : LSETPAREN set_type . RSETPAREN  (8)
-
-	RSETPAREN  shift 24
-	.  error
-
-
-state 14
 	expr : expr PLUS . expr  (11)
 
 	INT  shift 3
 	STRING  shift 4
-	LPAREN  shift 5
-	LSETPAREN  shift 6
+	LANGUAGE  shift 5
+	LPAREN  shift 6
+	TRUE  shift 7
+	FALSE  shift 8
+	.  error
+
+	expr  goto 21
+
+
+state 13
+	expr : expr MINUS . expr  (12)
+
+	INT  shift 3
+	STRING  shift 4
+	LANGUAGE  shift 5
+	LPAREN  shift 6
+	TRUE  shift 7
+	FALSE  shift 8
+	.  error
+
+	expr  goto 22
+
+
+state 14
+	expr : expr MULTIPLY . expr  (13)
+
+	INT  shift 3
+	STRING  shift 4
+	LANGUAGE  shift 5
+	LPAREN  shift 6
+	TRUE  shift 7
+	FALSE  shift 8
+	.  error
+
+	expr  goto 23
+
+
+state 15
+	expr : expr DIVIDE . expr  (14)
+
+	INT  shift 3
+	STRING  shift 4
+	LANGUAGE  shift 5
+	LPAREN  shift 6
+	TRUE  shift 7
+	FALSE  shift 8
+	.  error
+
+	expr  goto 24
+
+
+state 16
+	expr : expr EXPO . expr  (15)
+
+	INT  shift 3
+	STRING  shift 4
+	LANGUAGE  shift 5
+	LPAREN  shift 6
 	TRUE  shift 7
 	FALSE  shift 8
 	.  error
@@ -199,13 +214,13 @@ state 14
 	expr  goto 25
 
 
-state 15
-	expr : expr MINUS . expr  (12)
+state 17
+	expr : expr MOD . expr  (16)
 
 	INT  shift 3
 	STRING  shift 4
-	LPAREN  shift 5
-	LSETPAREN  shift 6
+	LANGUAGE  shift 5
+	LPAREN  shift 6
 	TRUE  shift 7
 	FALSE  shift 8
 	.  error
@@ -213,13 +228,13 @@ state 15
 	expr  goto 26
 
 
-state 16
-	expr : expr MULTIPLY . expr  (13)
+state 18
+	expr : expr UNION . expr  (17)
 
 	INT  shift 3
 	STRING  shift 4
-	LPAREN  shift 5
-	LSETPAREN  shift 6
+	LANGUAGE  shift 5
+	LPAREN  shift 6
 	TRUE  shift 7
 	FALSE  shift 8
 	.  error
@@ -227,97 +242,20 @@ state 16
 	expr  goto 27
 
 
-state 17
-	expr : expr DIVIDE . expr  (14)
-
-	INT  shift 3
-	STRING  shift 4
-	LPAREN  shift 5
-	LSETPAREN  shift 6
-	TRUE  shift 7
-	FALSE  shift 8
-	.  error
-
-	expr  goto 28
-
-
-state 18
-	expr : expr EXPO . expr  (15)
-
-	INT  shift 3
-	STRING  shift 4
-	LPAREN  shift 5
-	LSETPAREN  shift 6
-	TRUE  shift 7
-	FALSE  shift 8
-	.  error
-
-	expr  goto 29
-
-
 state 19
-	expr : expr MOD . expr  (16)
-
-	INT  shift 3
-	STRING  shift 4
-	LPAREN  shift 5
-	LSETPAREN  shift 6
-	TRUE  shift 7
-	FALSE  shift 8
-	.  error
-
-	expr  goto 30
-
-
-state 20
-	expr : expr UNION . expr  (17)
-
-	INT  shift 3
-	STRING  shift 4
-	LPAREN  shift 5
-	LSETPAREN  shift 6
-	TRUE  shift 7
-	FALSE  shift 8
-	.  error
-
-	expr  goto 31
-
-
-state 21
 	parser_main : expr EOL .  (1)
 
 	.  reduce 1
 
 
-state 22
+state 20
 	expr : LPAREN expr RPAREN .  (10)
 
 	.  reduce 10
 
 
-state 23
-	set_type : expr DELIM . set_type  (18)
-
-	INT  shift 3
-	STRING  shift 4
-	LPAREN  shift 5
-	LSETPAREN  shift 6
-	TRUE  shift 7
-	FALSE  shift 8
-	.  error
-
-	expr  goto 12
-	set_type  goto 32
-
-
-state 24
-	expr : LSETPAREN set_type RSETPAREN .  (8)
-
-	.  reduce 8
-
-
-25: shift/reduce conflict (shift 20, reduce 11) on UNION
-state 25
+21: shift/reduce conflict (shift 18, reduce 11) on UNION
+state 21
 	expr : expr . PLUS expr  (11)
 	expr : expr PLUS expr .  (11)
 	expr : expr . MINUS expr  (12)
@@ -327,21 +265,19 @@ state 25
 	expr : expr . MOD expr  (16)
 	expr : expr . UNION expr  (17)
 
-	MULTIPLY  shift 16
-	DIVIDE  shift 17
-	EXPO  shift 18
-	MOD  shift 19
-	UNION  shift 20
+	MULTIPLY  shift 14
+	DIVIDE  shift 15
+	EXPO  shift 16
+	MOD  shift 17
+	UNION  shift 18
 	PLUS  reduce 11
 	MINUS  reduce 11
 	RPAREN  reduce 11
-	DELIM  reduce 11
-	RSETPAREN  reduce 11
 	EOL  reduce 11
 
 
-26: shift/reduce conflict (shift 20, reduce 12) on UNION
-state 26
+22: shift/reduce conflict (shift 18, reduce 12) on UNION
+state 22
 	expr : expr . PLUS expr  (11)
 	expr : expr . MINUS expr  (12)
 	expr : expr MINUS expr .  (12)
@@ -351,21 +287,19 @@ state 26
 	expr : expr . MOD expr  (16)
 	expr : expr . UNION expr  (17)
 
-	MULTIPLY  shift 16
-	DIVIDE  shift 17
-	EXPO  shift 18
-	MOD  shift 19
-	UNION  shift 20
+	MULTIPLY  shift 14
+	DIVIDE  shift 15
+	EXPO  shift 16
+	MOD  shift 17
+	UNION  shift 18
 	PLUS  reduce 12
 	MINUS  reduce 12
 	RPAREN  reduce 12
-	DELIM  reduce 12
-	RSETPAREN  reduce 12
 	EOL  reduce 12
 
 
-27: shift/reduce conflict (shift 20, reduce 13) on UNION
-state 27
+23: shift/reduce conflict (shift 18, reduce 13) on UNION
+state 23
 	expr : expr . PLUS expr  (11)
 	expr : expr . MINUS expr  (12)
 	expr : expr . MULTIPLY expr  (13)
@@ -375,21 +309,19 @@ state 27
 	expr : expr . MOD expr  (16)
 	expr : expr . UNION expr  (17)
 
-	EXPO  shift 18
-	MOD  shift 19
-	UNION  shift 20
+	EXPO  shift 16
+	MOD  shift 17
+	UNION  shift 18
 	PLUS  reduce 13
 	MINUS  reduce 13
 	MULTIPLY  reduce 13
 	DIVIDE  reduce 13
 	RPAREN  reduce 13
-	DELIM  reduce 13
-	RSETPAREN  reduce 13
 	EOL  reduce 13
 
 
-28: shift/reduce conflict (shift 20, reduce 14) on UNION
-state 28
+24: shift/reduce conflict (shift 18, reduce 14) on UNION
+state 24
 	expr : expr . PLUS expr  (11)
 	expr : expr . MINUS expr  (12)
 	expr : expr . MULTIPLY expr  (13)
@@ -399,21 +331,19 @@ state 28
 	expr : expr . MOD expr  (16)
 	expr : expr . UNION expr  (17)
 
-	EXPO  shift 18
-	MOD  shift 19
-	UNION  shift 20
+	EXPO  shift 16
+	MOD  shift 17
+	UNION  shift 18
 	PLUS  reduce 14
 	MINUS  reduce 14
 	MULTIPLY  reduce 14
 	DIVIDE  reduce 14
 	RPAREN  reduce 14
-	DELIM  reduce 14
-	RSETPAREN  reduce 14
 	EOL  reduce 14
 
 
-29: shift/reduce conflict (shift 20, reduce 15) on UNION
-state 29
+25: shift/reduce conflict (shift 18, reduce 15) on UNION
+state 25
 	expr : expr . PLUS expr  (11)
 	expr : expr . MINUS expr  (12)
 	expr : expr . MULTIPLY expr  (13)
@@ -423,7 +353,7 @@ state 29
 	expr : expr . MOD expr  (16)
 	expr : expr . UNION expr  (17)
 
-	UNION  shift 20
+	UNION  shift 18
 	PLUS  reduce 15
 	MINUS  reduce 15
 	MULTIPLY  reduce 15
@@ -431,13 +361,11 @@ state 29
 	EXPO  reduce 15
 	MOD  reduce 15
 	RPAREN  reduce 15
-	DELIM  reduce 15
-	RSETPAREN  reduce 15
 	EOL  reduce 15
 
 
-30: shift/reduce conflict (shift 20, reduce 16) on UNION
-state 30
+26: shift/reduce conflict (shift 18, reduce 16) on UNION
+state 26
 	expr : expr . PLUS expr  (11)
 	expr : expr . MINUS expr  (12)
 	expr : expr . MULTIPLY expr  (13)
@@ -447,7 +375,7 @@ state 30
 	expr : expr MOD expr .  (16)
 	expr : expr . UNION expr  (17)
 
-	UNION  shift 20
+	UNION  shift 18
 	PLUS  reduce 16
 	MINUS  reduce 16
 	MULTIPLY  reduce 16
@@ -455,19 +383,17 @@ state 30
 	EXPO  reduce 16
 	MOD  reduce 16
 	RPAREN  reduce 16
-	DELIM  reduce 16
-	RSETPAREN  reduce 16
 	EOL  reduce 16
 
 
-31: shift/reduce conflict (shift 14, reduce 17) on PLUS
-31: shift/reduce conflict (shift 15, reduce 17) on MINUS
-31: shift/reduce conflict (shift 16, reduce 17) on MULTIPLY
-31: shift/reduce conflict (shift 17, reduce 17) on DIVIDE
-31: shift/reduce conflict (shift 18, reduce 17) on EXPO
-31: shift/reduce conflict (shift 19, reduce 17) on MOD
-31: shift/reduce conflict (shift 20, reduce 17) on UNION
-state 31
+27: shift/reduce conflict (shift 12, reduce 17) on PLUS
+27: shift/reduce conflict (shift 13, reduce 17) on MINUS
+27: shift/reduce conflict (shift 14, reduce 17) on MULTIPLY
+27: shift/reduce conflict (shift 15, reduce 17) on DIVIDE
+27: shift/reduce conflict (shift 16, reduce 17) on EXPO
+27: shift/reduce conflict (shift 17, reduce 17) on MOD
+27: shift/reduce conflict (shift 18, reduce 17) on UNION
+state 27
 	expr : expr . PLUS expr  (11)
 	expr : expr . MINUS expr  (12)
 	expr : expr . MULTIPLY expr  (13)
@@ -477,23 +403,15 @@ state 31
 	expr : expr . UNION expr  (17)
 	expr : expr UNION expr .  (17)
 
-	PLUS  shift 14
-	MINUS  shift 15
-	MULTIPLY  shift 16
-	DIVIDE  shift 17
-	EXPO  shift 18
-	MOD  shift 19
-	UNION  shift 20
+	PLUS  shift 12
+	MINUS  shift 13
+	MULTIPLY  shift 14
+	DIVIDE  shift 15
+	EXPO  shift 16
+	MOD  shift 17
+	UNION  shift 18
 	RPAREN  reduce 17
-	DELIM  reduce 17
-	RSETPAREN  reduce 17
 	EOL  reduce 17
-
-
-state 32
-	set_type : expr DELIM set_type .  (18)
-
-	.  reduce 18
 
 
 Rules never reduced:
@@ -502,14 +420,14 @@ Rules never reduced:
 	type : LPAREN type RPAREN  (4)
 
 
+State 21 contains 1 shift/reduce conflict.
+State 22 contains 1 shift/reduce conflict.
+State 23 contains 1 shift/reduce conflict.
+State 24 contains 1 shift/reduce conflict.
 State 25 contains 1 shift/reduce conflict.
 State 26 contains 1 shift/reduce conflict.
-State 27 contains 1 shift/reduce conflict.
-State 28 contains 1 shift/reduce conflict.
-State 29 contains 1 shift/reduce conflict.
-State 30 contains 1 shift/reduce conflict.
-State 31 contains 7 shift/reduce conflicts.
+State 27 contains 7 shift/reduce conflicts.
 
 
-23 terminals, 6 nonterminals
-21 grammar rules, 33 states
+24 terminals, 5 nonterminals
+19 grammar rules, 28 states
