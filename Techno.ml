@@ -66,23 +66,6 @@ let rec appendToList l i =
   | h :: t -> h :: (appendToList t i)
 ;;
 
-(* let rec str_to_lst string =
-	let read i list =
-		if (i < 0)
-		then list
-		else read (i-1) (s.[i] :: list)
-	in read ((String.length s) - 1) []
-;; *)
-
-(* let rec gen_lst aux_list =
-	| [] -> aux_list
-	| '{' :: t -> gen_lst aux_list t
-	| '}' :: t -> aux_list
-	| ',' :: t -> gen_lst aux_list t
-	| ' ' :: t -> gen_lst aux_list t
-	| h :: t ->
-;; *)
-
 let rm_set_right s =
 	Str.global_replace (Str.regexp "{") "" s;;
 
@@ -93,6 +76,8 @@ let str_to_lst str =
 	let rm_paren str =
 		rm_set_left (rm_set_right str)
 	in Str.split (Str.regexp ",") (rm_paren str);;
+
+
 
 (*==== Type checking function ====*)
 let rec typeOf e =
