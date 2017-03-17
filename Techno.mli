@@ -8,13 +8,7 @@ type technoType =
 type tech =
   | TLang of string
   | TUnion of tech * tech
-
-let rec isValue e =
-  match e with
-    | TBool (b) -> true
-    | TString (c) -> true
-    | _ -> false
-;;
+  | TIntersection of tech * tech
 
 val typeProg : tech -> technoType
 val evalProg : tech -> tech

@@ -9,6 +9,6 @@ rule lexer_main = parse
 	| '{'(' '*(['a'-'z']+|':')' '*','' '*)*(['a'-'z']+|':')?' '*'}' as lxm		{ LANGUAGE(lxm) }
     | '('					{ LPAREN }
     | ')'					{ RPAREN }
-	| 'U'					{ UNION }
-	| ';'					{ EOL }			(* EOL and EOF functions *)
-	| eof					{ raise Eof }
+	| "U"					{ UNION }
+	| "N"					{ INTERSECT }
+	| ";;"					{ EOL }			(* EOL and EOF functions *)

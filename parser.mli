@@ -2,12 +2,8 @@ type token =
   | LANGUAGE of (string)
   | LPAREN
   | RPAREN
-  | STRING
-  | DELIM
   | UNION
-  | LSETPAREN
-  | RSETPAREN
-  | EOF
+  | INTERSECT
   | EOL
 
 val parser_main :

@@ -2,12 +2,8 @@ type token =
   | LANGUAGE of (string)
   | LPAREN
   | RPAREN
-  | STRING
-  | DELIM
   | UNION
-  | LSETPAREN
-  | RSETPAREN
-  | EOF
+  | INTERSECT
   | EOL
 
 open Parsing;;
@@ -15,17 +11,13 @@ let _ = parse_error;;
 # 2 "parser.mly"
 
 	open Techno
-# 19 "parser.ml"
+# 15 "parser.ml"
 let yytransl_const = [|
   258 (* LPAREN *);
   259 (* RPAREN *);
-  260 (* STRING *);
-  261 (* DELIM *);
-  262 (* UNION *);
-  263 (* LSETPAREN *);
-  264 (* RSETPAREN *);
-    0 (* EOF *);
-  265 (* EOL *);
+  260 (* UNION *);
+  261 (* INTERSECT *);
+  262 (* EOL *);
     0|]
 
 let yytransl_block = [|
@@ -33,47 +25,43 @@ let yytransl_block = [|
     0|]
 
 let yylhs = "\255\255\
-\001\000\002\000\002\000\002\000\000\000"
+\001\000\002\000\002\000\002\000\002\000\000\000"
 
 let yylen = "\002\000\
-\002\000\001\000\003\000\003\000\002\000"
+\002\000\001\000\003\000\003\000\003\000\002\000"
 
 let yydefred = "\000\000\
-\000\000\000\000\002\000\000\000\005\000\000\000\000\000\000\000\
-\001\000\003\000\000\000"
+\000\000\000\000\002\000\000\000\006\000\000\000\000\000\000\000\
+\000\000\001\000\003\000\004\000\005\000"
 
 let yydgoto = "\002\000\
 \005\000\006\000"
 
-let yysindex = "\008\000\
-\001\255\000\000\000\000\001\255\000\000\254\254\005\255\001\255\
-\000\000\000\000\004\255"
+let yysindex = "\010\000\
+\008\255\000\000\000\000\008\255\000\000\253\254\003\255\008\255\
+\008\255\000\000\000\000\000\000\000\000"
 
 let yyrindex = "\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\000\000\000\000\253\254"
+\000\000\000\000\000\000\000\000\000\000"
 
 let yygindex = "\000\000\
-\000\000\253\255"
+\000\000\252\255"
 
 let yytablesize = 11
-let yytable = "\004\000\
-\007\000\003\000\004\000\008\000\011\000\004\000\009\000\010\000\
-\001\000\008\000\008\000"
+let yytable = "\007\000\
+\008\000\009\000\010\000\012\000\013\000\011\000\008\000\009\000\
+\003\000\004\000\001\000"
 
-let yycheck = "\003\001\
-\004\000\001\001\002\001\006\001\008\000\009\001\009\001\003\001\
-\001\000\006\001\006\001"
+let yycheck = "\004\000\
+\004\001\005\001\006\001\008\000\009\000\003\001\004\001\005\001\
+\001\001\002\001\001\000"
 
 let yynames_const = "\
   LPAREN\000\
   RPAREN\000\
-  STRING\000\
-  DELIM\000\
   UNION\000\
-  LSETPAREN\000\
-  RSETPAREN\000\
-  EOF\000\
+  INTERSECT\000\
   EOL\000\
   "
 
@@ -86,31 +74,39 @@ let yyact = [|
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'expr) in
     Obj.repr(
-# 15 "parser.mly"
-                ( _1 )
-# 92 "parser.ml"
+# 16 "parser.mly"
+                 ( _1 )
+# 80 "parser.ml"
                : Techno.tech))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
-# 18 "parser.mly"
+# 19 "parser.mly"
                  ( TLang _1 )
-# 99 "parser.ml"
+# 87 "parser.ml"
                : 'expr))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : 'expr) in
     Obj.repr(
-# 19 "parser.mly"
+# 20 "parser.mly"
                          ( _2 )
-# 106 "parser.ml"
+# 94 "parser.ml"
                : 'expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'expr) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'expr) in
     Obj.repr(
-# 20 "parser.mly"
-                      ( TUnion(_1, _3) )
-# 114 "parser.ml"
+# 21 "parser.mly"
+                       ( TUnion(_1, _3) )
+# 102 "parser.ml"
+               : 'expr))
+; (fun __caml_parser_env ->
+    let _1 = (Parsing.peek_val __caml_parser_env 2 : 'expr) in
+    let _3 = (Parsing.peek_val __caml_parser_env 0 : 'expr) in
+    Obj.repr(
+# 22 "parser.mly"
+                         ( TIntersection(_1, _3) )
+# 110 "parser.ml"
                : 'expr))
 (* Entry parser_main *)
 ; (fun __caml_parser_env -> raise (Parsing.YYexit (Parsing.peek_val __caml_parser_env 0)))
