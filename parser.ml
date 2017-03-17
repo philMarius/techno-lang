@@ -198,7 +198,7 @@ let yyact = [|
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
 # 35 "parser.mly"
-                 ( TSet _1 )
+                 ( TLang _1 )
 # 203 "parser.ml"
                : 'expr))
 ; (fun __caml_parser_env ->

@@ -60,11 +60,11 @@ let rec expoInt base power =
     aux 1 base power
 ;;
 
-let rec appendToList l i =
-  match l with
-  | [] -> [i]
-  | h :: t -> h :: (appendToList t i)
-;;
+let append l1 l2 =
+	let rec aux l3 = function
+		| [] -> l3
+		| h::t -> aux (h::l3) t in
+	aux l1 l2;;
 
 let rm_rparen s =
 	Str.global_replace (Str.regexp "{") "" s;;
@@ -74,15 +74,10 @@ let rm_lparen s =
 
 let uniq_sort l =
 	let sort = List.sort compare l in
-	let rec aux acc l =
-		match l with
-			| [] -> List.rev acc
-			| [a] -> List.rev (a :: acc)
-			| (a :: b :: t) ->
-				if a = b
-				then aux (b :: acc) acc
-				else aux (b :: acc) (a :: acc)
-	in aux [] l
+	let rec aux l2 = function
+		| [] -> List.rev l2
+		| h :: t -> if List.mem h l2 then aux l2 t else aux (h :: l2) t
+	in aux [] sort
 ;;
 
 let str_to_lst str =
@@ -91,6 +86,21 @@ let str_to_lst str =
 	in uniq_sort (Str.split (Str.regexp ",") (rm_paren str))
 ;;
 
+let union l1 l2 =
+	uniq_sort (append l1 l2);;
+
+let rec intersect l1 l2 =
+    match l1 with [] -> []
+        | h1::t1 -> (
+          match l2 with [] -> []
+              | h2::t2 when h1 < h2 -> intersect t1 l2
+              | h2::t2 when h1 > h2 -> intersect l1 t2
+              | h2::t2 -> (
+                match intersect t1 t2 with [] -> [h1]
+                    | h3::t3 as l when h3 = h1 -> l
+                    | h3::t3 as l -> h1::l
+              )
+        );;
 
 (*==== Type checking function ====*)
 let rec typeOf e =
@@ -139,7 +149,7 @@ let rec eval e =
     | (TNum n) -> raise Terminated
     | (TBool b) -> raise Terminated
     | (TString s) -> raise Terminated
-    | (TLang(x)) -> (TLang(x))
+    | (TLang x) -> (TLang x)
 
     | (TPlus(TNum(n), TNum(m))) -> (TNum( n + m ))
     | (TPlus(TNum(n), e2)) -> let (e2') = (eval e2) in (TPlus(TNum(n),e2'))
@@ -161,9 +171,13 @@ let rec eval e =
     | (TExpo(TNum(n), e2)) -> let (e2') = (eval e2) in (TExpo(TNum(n),e2'))
     | (TExpo(e1,e2)) -> let (e1') = (eval e1) in (TExpo(e1', e2))
 
-    | (TMod(TNum(n), TNum(m))) ->(TNum(n mod m))
+    | (TMod(TNum(n), TNum(m))) -> (TNum(n mod m))
     | (TMod(TNum(n), e2)) -> let (e2') = (eval e2) in (TMod(TNum(n),e2'))
     | (TMod(e1,e2)) -> let (e1') = (eval e1) in (TMod(e1', e2))
+
+		| (TUnion(TLang(x), TLang(y))) -> union (str_to_lst x) (str_to_lst y)
+		| (TUnion(TLang(x), e2)) -> let (e2') = (eval e2) in (TUnion(TLang(x), e2'))
+		| (TUnion(e1, e2)) -> let e1' = eval e1 in (TUnion(e1', e2))
 
     | _ -> raise Terminated
 ;;
