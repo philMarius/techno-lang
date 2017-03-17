@@ -32,7 +32,7 @@ expr:
 	| INT							{ TNum $1 }
 	| TRUE							{ TBool true }
 	| STRING						{ TString $1 }
-	| LANGUAGE						{ TSet $1 }
+	| LANGUAGE						{ TLang $1 }
 	| FALSE							{ TBool false }
 	| LPAREN expr RPAREN 			{ $2 }
 	| expr PLUS expr 				{ TPlus($1, $3) }

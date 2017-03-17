@@ -5,7 +5,7 @@ type technoType =
   | TechnoInt
   | TechnoBool
   | TechnoString
-  | TechnoSet
+  | TechnoLang
 
 (* Grammar of the Techno language *)
 type tech =
@@ -18,7 +18,7 @@ type tech =
   | TDivide of tech * tech
   | TExpo of tech * tech
   | TMod of tech * tech
-  | TSet of string
+  | TLang of string
   | TUnion of tech * tech
 
 val typeProg : tech -> technoType

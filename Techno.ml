@@ -15,7 +15,7 @@ type technoType =
   | TechnoInt
   | TechnoBool
   | TechnoString
-  | TechnoSet
+  | TechnoLang
 
 (* Grammar of the Techno language *)
 type tech =
@@ -28,7 +28,7 @@ type tech =
   | TDivide of tech * tech
   | TExpo of tech * tech
   | TMod of tech * tech
-  | TSet of string
+  | TLang of string
   | TUnion of tech * tech
 
 let rec isValue e =
@@ -88,7 +88,8 @@ let uniq_sort l =
 let str_to_lst str =
 	let rm_paren str =
 		rm_lparen (rm_rparen str)
-	in uniq_sort (Str.split (Str.regexp ",") (rm_paren str));;
+	in uniq_sort (Str.split (Str.regexp ",") (rm_paren str))
+;;
 
 
 (*==== Type checking function ====*)
@@ -97,7 +98,7 @@ let rec typeOf e =
     | TNum(n) -> TechnoInt
     | TBool(b) -> TechnoBool
     | TString(s) -> TechnoString
-		| TSet(e1) -> TechnoSet
+		| TLang(e1) -> TechnoLang
     | TPlus(e1,e2) ->
         (match (typeOf e1), (typeOf e2) with
         | TechnoInt, TechnoInt -> TechnoInt
@@ -124,7 +125,7 @@ let rec typeOf e =
         | _ -> raise TypeError)
     | TUnion(e1,e2) ->
         (match (typeOf e1), (typeOf e2) with
-        | TechnoSet, TechnoSet -> TechnoSet
+        | TechnoLang, TechnoLang -> TechnoLang
         | _ -> raise TypeError)
     | _ -> raise TypeError
 
@@ -132,13 +133,13 @@ let rec typeOf e =
 (*==== Begins evaluation of terms ====*)
 let typeProg e = typeOf e ;;
 
-(*==== Machine anlaysis method ====*)
+(*==== Machine analysis method ====*)
 let rec eval e =
   match e with
     | (TNum n) -> raise Terminated
     | (TBool b) -> raise Terminated
     | (TString s) -> raise Terminated
-    | (TSet(x)) -> (TSet(x))
+    | (TLang(x)) -> (TLang(x))
 
     | (TPlus(TNum(n), TNum(m))) -> (TNum( n + m ))
     | (TPlus(TNum(n), e2)) -> let (e2') = (eval e2) in (TPlus(TNum(n),e2'))
