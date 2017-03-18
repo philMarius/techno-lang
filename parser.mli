@@ -1,5 +1,9 @@
 type token =
   | LANGUAGE of (string)
+  | STRING of (string)
+  | INT of (int)
+  | CONCAT
+  | LENGTH
   | LPAREN
   | RPAREN
   | UNION

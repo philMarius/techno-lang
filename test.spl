@@ -1,1 +1,1 @@
-{b,c,d} U {a,f,b,c,d};;
+strlen("Test string, testing this shit.");;
