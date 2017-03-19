@@ -1,0 +1,15 @@
+(* This function adds a specified number of a's to a string *)
+let addA l n = 
+	let rec aux l n acc = 
+		if n>0 then aux l (n-1) acc ^ l else ""
+	in aux l n "";;
+
+
+(* This function returns the kleene star *)
+let kleene n l1 =
+	let rec aux x l2 = function
+		| [] -> l2
+		| h::t -> if x < n then aux (x+1) ((h^(addA "a" x)) :: l2) l1 else List.rev l2
+	in aux 0 [] l1;;
+
+
