@@ -13,3 +13,26 @@ let kleene n l1 =
 	in aux 0 [] l1;;
 
 
+	
+(* add a letter to a list *)
+let addLetter n l2 =
+let rec aux l3 = function
+| [] -> List.rev l3
+| h::t -> aux ((n^h)::l3) t 
+in aux [] l2;;
+
+
+(* limit the length of a list *)
+let limitLength n l1 =
+let rec aux x l2 = function
+| [] -> l2
+| h :: t -> if x < n then aux (x + 1) (h :: l2) t else List.rev l2
+in aux 0 [] l1;;
+
+
+(* concat language with language of a b c *)
+let concat2 n l1 =
+let rec aux = function
+| [] -> []
+| h :: t -> limitLength n (addLetter h ["aa"; "ab"; "ac"; "ba"; "bb"; "bc"; "ca"; "cb"; "cc"; "aaa"; "aab"; "aac"; "aba"; "abb"; "abc"; "aca"; "acb"; "acc"; "baa";"bab";"bac";"bba";"bbb";"bbc";"bca";"bcb";"bcc";"caa";"cab";"cac";"cba";"cbb";"cbc";"cca";"ccb";"ccc";"aaaa";"aaab";"aaac";"aaba"])
+in aux l1;;
