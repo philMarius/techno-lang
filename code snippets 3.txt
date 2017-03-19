@@ -36,3 +36,67 @@ let rec aux = function
 | [] -> []
 | h :: t -> limitLength n (addLetter h ["aa"; "ab"; "ac"; "ba"; "bb"; "bc"; "ca"; "cb"; "cc"; "aaa"; "aab"; "aac"; "aba"; "abb"; "abc"; "aca"; "acb"; "acc"; "baa";"bab";"bac";"bba";"bbb";"bbc";"bca";"bcb";"bcc";"caa";"cab";"cac";"cba";"cbb";"cbc";"cca";"ccb";"ccc";"aaaa";"aaab";"aaac";"aaba"])
 in aux l1;;
+
+
+
+
+
+
+**********************************IGNORE**************************************************************
+
+kleene 5 ["b"];;
+
+let addA l n = 
+let rec aux l n acc = 
+if n>0 then aux l (n-1) acc ^ l else ""
+in aux l n "";;
+
+
+
+
+let kleene n l1 =
+let rec aux x l2 = function
+| [] -> l2
+| h::t -> if x < n then aux (x+1) ((h^(addA "a" x)) :: l2) l1 else List.rev l2
+in aux 0 [] l1;;
+
+
+
+
+let multiples n l1 =
+let rec aux x l2 = function
+| [] -> l2
+| h :: t -> if x < n then aux (x+1) (h::l2) l1 else l2
+in aux 0 [] l1;;
+
+
+let concat2 n l1 =
+let rec aux l2 l3 = function
+| [] -> l3
+| h :: t -> aux (n^h :: l3) t
+in aux ["aa"; "ab"; "ac"; "ba"; "bb"; "bc"; "ca" "cb"; "cc"; "aaa"; "aab"; "aac"; "aba"; "abb"; "abc"; "aca"; "acb"; "acc"; "baa";"bab";"bac";"bba";"bbb";"bbc";"bca";"bcb";"bcc";"caa";"cab";"cac";"cba";"cbb";"cbc";"cca";"ccb";"ccc";"aaaa";"aaab";"aaac";"aaba"] [] l1;;
+
+
+let addLetter n l2 =
+let rec aux l3 = function
+| [] -> List.rev l3
+| h::t -> aux ((n^h)::l3) t 
+in aux [] l2;;
+
+
+
+let concat2 n l1 =
+let rec aux = function
+| [] -> []
+| h :: t -> limitLength n (addLetter h ["aa"; "ab"; "ac"; "ba"; "bb"; "bc"; "ca"; "cb"; "cc"; "aaa"; "aab"; "aac"; "aba"; "abb"; "abc"; "aca"; "acb"; "acc"; "baa";"bab";"bac";"bba";"bbb";"bbc";"bca";"bcb";"bcc";"caa";"cab";"cac";"cba";"cbb";"cbc";"cca";"ccb";"ccc";"aaaa";"aaab";"aaac";"aaba"])
+in aux l1;;
+
+
+
+let limitLength n l1 =
+let rec aux x l2 = function
+| [] -> l2
+| h :: t -> if x < n then aux (x + 1) (h :: l2) t else List.rev l2
+in aux 0 [] l1;;
+
+
