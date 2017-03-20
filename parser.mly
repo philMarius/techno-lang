@@ -1,6 +1,7 @@
 /* File parser.mly */
 %{
 	open Techno
+	open Utils
 %}
 %token <string> LANGUAGE
 %token <string> STRING
@@ -8,10 +9,11 @@
 %token CONCAT LENGTH APPENDTOLIST
 %token LPAREN RPAREN
 %token UNION INTERSECT
-%token EMPTYWORD
+%token EMPTYWORD IDENT
 %token DELIM
 %token EOL
 /* Highest precedence */
+%nonassoc MAP
 %nonassoc LENGTH
 %nonassoc CONCAT APPENDTOLIST
 %nonassoc UNION INTERSECT

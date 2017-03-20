@@ -13,7 +13,7 @@
 
 # These are the object files needed to rebuild the main executable file
 #
-OBJS = parser.cmo lexer.cmo Techno.cmo mysplinterpreter.cmo
+OBJS = parser.cmo lexer.cmo Techno.cmo mysplinterpreter.cmo utils.cmo
 
 COMMONOBJS = str.cma
 
@@ -28,7 +28,7 @@ all: $(DEPEND) $(OBJS) mysplinterpreter
 include .depend
 
 # Build an executable typechecker
-main: $(OBJS) mysplinterpreter.cmo
+mysplinterpreter: $(OBJS) mysplinterpreter.cmo
 	@echo Linking $@
 	ocamlc -o $@ $(COMMONOBJS) $(OBJS)
 

@@ -10,6 +10,7 @@ type token =
   | UNION
   | INTERSECT
   | EMPTYWORD
+  | IDENT
   | DELIM
   | EOL
 

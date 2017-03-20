@@ -20,4 +20,4 @@ setup.data
 setup.log
 
 # test files
-stdintest.ml
+stdintest.*

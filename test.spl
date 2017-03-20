@@ -1,1 +1,1 @@
-prefixToList "x" {a,b,c,d};;
+$1;;

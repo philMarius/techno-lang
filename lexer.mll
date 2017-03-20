@@ -1,6 +1,7 @@
 (* File lexer.mll *)
 {
 	open Parser
+	open Utils
 	exception Eof
 }
 (* Lexer symbols *)
@@ -18,4 +19,6 @@ rule lexer_main = parse
 	| "prefixToList"				{ APPENDTOLIST }
 	| ','							{ DELIM }
 	| ':'							{ EMPTYWORD }
+	| "$"['0'-'9']+ as lxm			{ LANGUAGE(nth lxm) }
+	| "$last_line"					{ INT (get_last_line)}
 	| ";;"							{ EOL }			(* EOL and EOF functions *)
