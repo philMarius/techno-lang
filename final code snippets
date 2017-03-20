@@ -58,7 +58,11 @@ let alphabet l1 =
 		| h::t -> aux (("a"^h)::acc) t in
 	aux [] list;;
 	
-	
+
+
+let appenderMaster n l1 =
+	limitLength n ( removeDuplicates ( alphabet ( appender l1)));; 
+
 	
 	
 let addA l n = 
