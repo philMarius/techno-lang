@@ -1,7 +1,6 @@
 /* File parser.mly */
 %{
 	open Techno
-	open Utils
 %}
 %token <string> LANGUAGE
 %token <string> STRING
@@ -11,7 +10,8 @@
 %token UNION INTERSECT
 %token EMPTYWORD IDENT
 %token DELIM
-%token EOL
+%token EOF EOL
+%token CAP KLEENE
 /* Highest precedence */
 %nonassoc MAP
 %nonassoc LENGTH
@@ -22,9 +22,10 @@
 %type <Techno.tech> parser_main
 %%
 parser_main:
-	| expr EOL										{ $1 }
+	| expr EOF										{ $1 }
 ;
 expr:
+	| expr EOL expr									{ Eol($1, $3) } 
 	| INT											{ TInt $1 }
 	| LANGUAGE										{ TLang $1 }
 	| STRING										{ TString $1 }
@@ -33,5 +34,7 @@ expr:
 	| expr INTERSECT expr							{ TIntersection($1, $3) }
 	| expr CONCAT expr								{ TConcat($1, $3) }
 	| LENGTH LPAREN expr RPAREN						{ TStrLen $3 }
-	| APPENDTOLIST expr expr						{ TAppendToList($2,$3) }
+	| APPENDTOLIST LPAREN expr DELIM expr RPAREN	{ TAppendToList($3,$5) }
+	| CAP LPAREN expr DELIM expr RPAREN				{ TCap($3, $5) }
+	| KLEENE LPAREN expr DELIM expr DELIM expr RPAREN			{ TKleene($3, $5, $7) }
 ;

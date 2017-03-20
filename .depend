@@ -2,8 +2,8 @@ Techno.cmi :
 parser.cmi : Techno.cmi
 Techno.cmo : Techno.cmi
 Techno.cmx : Techno.cmi
-lexer.cmo : parser.cmi
-lexer.cmx : parser.cmx
+lexer.cmo : parser.cmi Techno.cmo
+lexer.cmx : parser.cmx Techno.cmi
 mysplinterpreter.cmo : Techno.cmi parser.cmi lexer.cmo
 mysplinterpreter.cmx : Techno.cmx parser.cmx lexer.cmx
 parser.cmo : Techno.cmi parser.cmi

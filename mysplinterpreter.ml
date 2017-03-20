@@ -16,7 +16,7 @@ let usage = "./mysplinterpreter PROGRAM_FILE" in
   let parsedProg = parseProgram !arg in
   let _ = typeProg parsedProg in
   let result = evalProg parsedProg in
-  let () = print_string "==> " ;
+  let () = 
     print_res result ;
     print_newline()
 in flush stdout

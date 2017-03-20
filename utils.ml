@@ -150,7 +150,7 @@ let get_line ln =
 let get_last_line =
   (int_of_string (last_element (Stream.npeek 100 input_file)))
 ;;
-
+(*
 type 'a list = Nil | Cons of 'a * 'a list;;
 type 'a stream = Nil | Cons of 'a * (unit -> 'a stream);;
 
@@ -169,4 +169,4 @@ let nth ln =
 	let rec aux n stream =
   	if n = 0 then hd stream else aux (n - 1) (tl stream)
 	in aux (int_of_string (rm_dollar ln)) input_file
-;;
+;; *)

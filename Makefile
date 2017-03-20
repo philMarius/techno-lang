@@ -13,7 +13,7 @@
 
 # These are the object files needed to rebuild the main executable file
 #
-OBJS = parser.cmo lexer.cmo Techno.cmo mysplinterpreter.cmo utils.cmo
+OBJS = parser.cmo lexer.cmo Techno.cmo mysplinterpreter.cmo
 
 COMMONOBJS = str.cma
 

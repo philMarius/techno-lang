@@ -12,7 +12,10 @@ type token =
   | EMPTYWORD
   | IDENT
   | DELIM
+  | EOF
   | EOL
+  | CAP
+  | KLEENE
 
 val parser_main :
   (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Techno.tech

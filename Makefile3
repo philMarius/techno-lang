@@ -1,0 +1,9 @@
+all:
+	ocamllex lexer.mll
+	ocamlyacc parser.mly
+	ocamlc -c parser.mli
+	ocamlc -c utils.ml
+	ocamlc -c lexer.ml
+	ocamlc -c parser.ml
+	ocamlc -c Techno.ml
+	ocamlc -o mysplinterpreter lexer.cmo parser.cmo Techno.cmo utils.cmo
