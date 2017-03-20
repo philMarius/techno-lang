@@ -157,13 +157,16 @@ let concat l1 l2 =
 	aux [] l1;;
 
 
+
+	
 let concatMaster n l1 =
 	let rec aux x l3 = 
-		if x < n then aux (x+1) (union (concat l1 l1) l3) else l3
-	in aux 0 [];;
+		if x < n then aux (x+1) (concat l1 l3) else l3
+	in aux 1 l1;;
 
 concat ["a";"b";"c"] ["a";"b";"c"];;
 
+concatMaster 2 ["a";"b";"c"];;
 
 
 
