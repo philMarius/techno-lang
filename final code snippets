@@ -89,6 +89,13 @@ let rec aux = function
 | h :: t -> limitLength n (addLetter h l2)
 in aux l1;;
 
+let concatModular n l1 l2=
+let rec aux = function
+| [] -> []
+| h :: t -> limitLength n (addLetter h l2)
+in aux l1;;
+
+
 (* final answer for 5 *)
 let concatMaster n l1 =
 	concatModular n l1 ["aa"; "ab"; "ac"; "ba"; "bb"; "bc"; "ca"; "cb"; "cc"; "aaa"; "aab"; "aac"; "aba"; "abb"; "abc"; "aca"; "acb"; "acc"; "baa";"bab";"bac";"bba";"bbb";"bbc";"bca";"bcb";"bcc";"caa";"cab";"cac";"cba";"cbb";"cbc";"cca";"ccb";"ccc";"aaaa";"aaab";"aaac";"aaba";"aabb";"aabc";"aaca";"aacb";"aacc";"abaa";"abab";"abac";"abba";"abbb";"abbc";"abca";"abcb";"abcc";"acaa";"acab";"acac";"acba";"acbb";"acbc";"acca";"accb";"accc";"baaa";"baab"];;
