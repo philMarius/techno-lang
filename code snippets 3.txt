@@ -6,11 +6,15 @@ let addA l n =
 
 
 (* This function returns the kleene star *)
-let kleene n l1 =
+let kleene n l1 s=
 	let rec aux x l2 = function
 		| [] -> l2
-		| h::t -> if x < n then aux (x+1) ((h^(addA "a" x)) :: l2) l1 else List.rev l2
+		| h::t -> if x < n then aux (x+1) ((h^(addA s x)) :: l2) l1 else List.rev l2
 	in aux 0 [] l1;;
+	
+(*final answer*)
+let kleeneMaster n l1 = 
+	kleene n l1 "a";;
 
 
 	
@@ -36,6 +40,130 @@ let rec aux = function
 | [] -> []
 | h :: t -> limitLength n (addLetter h ["aa"; "ab"; "ac"; "ba"; "bb"; "bc"; "ca"; "cb"; "cc"; "aaa"; "aab"; "aac"; "aba"; "abb"; "abc"; "aca"; "acb"; "acc"; "baa";"bab";"bac";"bba";"bbb";"bbc";"bca";"bcb";"bcc";"caa";"cab";"cac";"cba";"cbb";"cbc";"cca";"ccb";"ccc";"aaaa";"aaab";"aaac";"aaba"])
 in aux l1;;
+
+
+let concatModular n l1 l2=
+let rec aux = function
+| [] -> []
+| h :: t -> limitLength n (addLetter h l2)
+in aux l1;;
+
+(*final answer*)
+let concatMaster n l1 =
+	concatModular n l1 ["aa"; "ab"; "ac"; "ba"; "bb"; "bc"; "ca"; "cb"; "cc"; "aaa"; "aab"; "aac"; "aba"; "abb"; "abc"; "aca"; "acb"; "acc"; "baa";"bab";"bac";"bba";"bbb";"bbc";"bca";"bcb";"bcc";"caa";"cab";"cac";"cba";"cbb";"cbc";"cca";"ccb";"ccc";"aaaa";"aaab";"aaac";"aaba";"aabb";"aabc";"aaca";"aacb";"aacc";"abaa";"abab";"abac";"abba";"abbb";"abbc";"abca";"abcb";"abcc";"acaa";"acab";"acac";"acba";"acbb";"acbc";"acca";"accb";"accc";"baaa";"baab"];;
+
+
+
+let generateStrings n =
+	let rec aux x l1 = function
+		| 0 -> l1
+		|
+
+
+
+(* calculate the length of the largest string *)
+let calculateNumberOfLetters n size=
+	int_of_float ((log(2.0 *. float_of_int n +. 1.0)) /. (log(float_of_int size)));;
+
+
+calculateNumberOfLetters 13 3;;
+
+
+let calculateInterval n size letters =
+	n - ((1- (int_of_float ((float_of_int size) ** (float_of_int letters)))) / (1 - ( size)));;
+
+
+calculateInterval 18 3 3;;
+
+
+let calculateString j letters interval size =
+	(int_of_float ((float_of_int interval) /. (float_of_int size) ** (float_of_int j))) mod size;;
+
+calculateString 2 3 5 3;;
+
+
+
+let rec elementOfList k = function
+    | [] -> None
+    | h :: t -> if k = 1 then Some h else elementOfList (k-1) t;;
+
+
+let getString j letters interval size l1=
+	elementOfList (calculateString j letters interval size) l1;;
+	
+getString 0 3 5 3 ["a"; "b"; "c"];;
+
+elementOfList 2 [ "a"; "b"; "c"];;
+
+let elementOfList k l1 = 
+	let rec aux n l2= function
+		| [] -> l2
+		| h::t -> if n = k then aux (n+1) (h::l2) t else aux (n+1) l2 t in
+	aux 0 [] l1;;
+
+
+
+let elementOfList k l1 = 
+	let rec aux n l2= function
+		| [] -> l2
+		| h::t -> if n = k then aux (n+1) (h::l2) t else aux (n+1) l2 t in
+	aux 0 [] l1;;
+
+let jCalculator n =
+l1 = [] in
+	for i = (n-1) downto 0 do
+		add l1 (getString i 3 5 3 ["a"; "b"; "c"])
+	done;;
+	
+	
+let calculator n size=
+	let x = (calculateNumberOfLetters n size) in
+	let y = (calculateInterval n size x) in
+	let rec aux l1 = 
+
+
+
+
+
+
+
+
+let ins_all_positions x l =  
+  let rec aux prev acc = function
+    | [] -> (prev @ [x]) :: acc |> List.rev
+    | hd::tl as l -> aux (prev @ [hd]) ((prev @ [x] @ l) :: acc) tl
+  in
+  aux [] [] l
+
+
+
+
+
+let postFix list letter=
+	let rec aux acc = function
+		| [] -> acc
+		| h::t -> aux ((h^letter)::acc) t in
+	aux [] list;;
+
+
+
+
+
+
+let concat l1 l2 =
+	let rec aux l3 = function
+		| [] -> l3
+		| h :: t -> aux (union (appender l2 h) l3) t in
+	aux [] l1;;
+
+
+let concatMaster n l1 =
+	let rec aux x l3 = 
+		if x < n then aux (x+1) (union (concat l1 l1) l3) else l3
+	in aux 0 [];;
+
+concat ["a";"b";"c"] ["a";"b";"c"];;
+
 
 
 
