@@ -2,44 +2,41 @@
 %{
 	open Techno
 %}
-%token <int> INT
-%token <string> STRING
 %token <string> LANGUAGE
-%token PLUS MINUS MULTIPLY DIVIDE EXPO MOD
+%token <string> STRING
+%token <int> INT
+%token CONCAT LENGTH APPENDTOLIST
 %token LPAREN RPAREN
-%token STRING DELIM
-%token UNION
-%token LSETPAREN RSETPAREN
-%token INT_TYPE BOOL_TYPE
-%token TRUE FALSE
+%token UNION INTERSECT
+%token EMPTYWORD IDENT
+%token DELIM
 %token EOF EOL
-%left PLUS MINUS
-%left MULTIPLY DIVIDE
-%left EXPO MOD
+%token CAP KLEENE CONCATABC
+/* Highest precedence */
+%left EOL
+%nonassoc MAP
+%nonassoc LENGTH
+%nonassoc CONCAT APPENDTOLIST
+%nonassoc UNION INTERSECT
+/* Lowest precedece */
 %start parser_main
 %type <Techno.tech> parser_main
-%type <Techno.technoType> type
 %%
 parser_main:
-	| expr EOL					{ $1 }
-;
-type:
- 	| INT_TYPE					{ TechnoInt }
-	| BOOL_TYPE					{ TechnoBool }
-	| LPAREN type RPAREN		{ $2 }
+	| expr EOF										{ $1 }
 ;
 expr:
-	| INT							{ TNum $1 }
-	| TRUE							{ TBool true }
-	| STRING						{ TString $1 }
-	| LANGUAGE						{ TSet $1 }
-	| FALSE							{ TBool false }
-	| LPAREN expr RPAREN 			{ $2 }
-	| expr PLUS expr 				{ TPlus($1, $3) }
-	| expr MINUS expr 				{ TMinus($1, $3) }
-	| expr MULTIPLY expr			{ TMultiply($1, $3) }
-	| expr DIVIDE expr				{ TDivide($1, $3) }
-	| expr EXPO expr				{ TExpo($1, $3) }
-	| expr MOD expr					{ TMod($1, $3) }
-	| expr UNION expr				{ TUnion($1, $3) }
+	| expr EOL expr									{ Eol($1, $3) } 
+	| INT											{ TInt $1 }
+	| LANGUAGE										{ TLang $1 }
+	| STRING										{ TString $1 }
+	| LPAREN expr RPAREN 							{ $2 }
+	| expr UNION expr 								{ TUnion($1, $3) }
+	| expr INTERSECT expr							{ TIntersection($1, $3) }
+	| expr CONCAT expr								{ TConcat($1, $3) }
+	| LENGTH LPAREN expr RPAREN						{ TStrLen $3 }
+	| APPENDTOLIST LPAREN expr DELIM expr RPAREN	{ TAppendToList($3,$5) }
+	| CAP LPAREN expr DELIM expr RPAREN				{ TCap($3, $5) }
+	| KLEENE LPAREN expr DELIM expr DELIM expr RPAREN	{ TKleene($3, $5, $7) }
+	| CONCATABC LPAREN expr DELIM expr RPAREN		{ TConcatABC($3, $5) }
 ;

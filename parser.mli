@@ -1,25 +1,22 @@
 type token =
-  | INT of (int)
-  | STRING of (string)
   | LANGUAGE of (string)
-  | PLUS
-  | MINUS
-  | MULTIPLY
-  | DIVIDE
-  | EXPO
-  | MOD
+  | STRING of (string)
+  | INT of (int)
+  | CONCAT
+  | LENGTH
+  | APPENDTOLIST
   | LPAREN
   | RPAREN
-  | DELIM
   | UNION
-  | LSETPAREN
-  | RSETPAREN
-  | INT_TYPE
-  | BOOL_TYPE
-  | TRUE
-  | FALSE
+  | INTERSECT
+  | EMPTYWORD
+  | IDENT
+  | DELIM
   | EOF
   | EOL
+  | CAP
+  | KLEENE
+  | CONCATABC
 
 val parser_main :
   (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Techno.tech

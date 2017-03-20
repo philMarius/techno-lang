@@ -13,7 +13,7 @@
 
 # These are the object files needed to rebuild the main executable file
 #
-OBJS = parser.cmo lexer.cmo Techno.cmo main.cmo
+OBJS = parser.cmo lexer.cmo Techno.cmo mysplinterpreter.cmo
 
 COMMONOBJS = str.cma
 
@@ -22,13 +22,13 @@ DEPEND += lexer.ml parser.ml
 
 # When "make" is invoked with no arguments, we build an executable
 # typechecker, after building everything that it depends on
-all: $(DEPEND) $(OBJS) main
+all: $(DEPEND) $(OBJS) mysplinterpreter
 
 # Include an automatically generated list of dependencies between source files
 include .depend
 
 # Build an executable typechecker
-main: $(OBJS) main.cmo
+mysplinterpreter: $(OBJS) mysplinterpreter.cmo
 	@echo Linking $@
 	ocamlc -o $@ $(COMMONOBJS) $(OBJS)
 

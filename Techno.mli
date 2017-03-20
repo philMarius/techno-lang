@@ -1,25 +1,27 @@
 (* Header file for Techno.ml *)
 
-(* Types of the Techno language *)
+(*==== Types of the Techno language ====*)
 type technoType =
-  | TechnoInt
-  | TechnoBool
+  | TechnoLang
   | TechnoString
-  | TechnoSet
+  | TechnoInt
+  | TechnoMultiLine
 
-(* Grammar of the Techno language *)
+(*==== Grammar of the Techno language ====*)
 type tech =
-  | TNum of int
-  | TBool of bool
-  | TString of string
-  | TPlus of tech * tech
-  | TMinus of tech * tech
-  | TMultiply of tech * tech
-  | TDivide of tech * tech
-  | TExpo of tech * tech
-  | TMod of tech * tech
-  | TSet of string
+  | TInt of int
+  | TLang of string
   | TUnion of tech * tech
+  | Eol of tech * tech
+	| TIntersection of tech * tech
+  | TString of string
+  | TConcat of tech * tech
+  | TStrLen of tech
+  | TAppendToList of tech * tech
+  | TCap of tech * tech
+  | TKleene of tech * tech * tech 
+  | TConcatABC of tech * tech
+
 
 val typeProg : tech -> technoType
 val evalProg : tech -> tech
