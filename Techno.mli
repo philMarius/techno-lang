@@ -5,7 +5,6 @@ type technoType =
   | TechnoLang
   | TechnoString
   | TechnoInt
-  | TechnoMultiLine
 
 (*==== Grammar of the Techno language ====*)
 type tech =
