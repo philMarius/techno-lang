@@ -20,6 +20,8 @@ type tech =
   | TAppendToList of tech * tech
   | TCap of tech * tech
   | TKleene of tech * tech * tech 
+  | TConcatABC of tech * tech
+
 
 val typeProg : tech -> technoType
 val evalProg : tech -> tech

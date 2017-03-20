@@ -11,8 +11,9 @@
 %token EMPTYWORD IDENT
 %token DELIM
 %token EOF EOL
-%token CAP KLEENE
+%token CAP KLEENE CONCATABC
 /* Highest precedence */
+%left EOL
 %nonassoc MAP
 %nonassoc LENGTH
 %nonassoc CONCAT APPENDTOLIST
@@ -36,5 +37,6 @@ expr:
 	| LENGTH LPAREN expr RPAREN						{ TStrLen $3 }
 	| APPENDTOLIST LPAREN expr DELIM expr RPAREN	{ TAppendToList($3,$5) }
 	| CAP LPAREN expr DELIM expr RPAREN				{ TCap($3, $5) }
-	| KLEENE LPAREN expr DELIM expr DELIM expr RPAREN			{ TKleene($3, $5, $7) }
+	| KLEENE LPAREN expr DELIM expr DELIM expr RPAREN	{ TKleene($3, $5, $7) }
+	| CONCATABC LPAREN expr DELIM expr RPAREN		{ TConcatABC($3, $5) }
 ;

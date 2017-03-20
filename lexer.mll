@@ -52,3 +52,4 @@ rule lexer_main = parse
 	| "cap"							{ CAP }
 	| ";"							{ EOL }
 	| ";;"							{ EOF }			(* EOL functions *)
+	| "concatABC"					{ CONCATABC }

@@ -16,6 +16,7 @@ type token =
   | EOL
   | CAP
   | KLEENE
+  | CONCATABC
 
 val parser_main :
   (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Techno.tech

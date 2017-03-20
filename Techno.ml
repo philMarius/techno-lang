@@ -30,6 +30,7 @@ type tech =
   | TAppendToList of tech * tech
   | TCap of tech * tech
   | TKleene of tech * tech * tech 
+  | TConcatABC of tech * tech
 
 let rec isValue e =
   match e with
@@ -106,7 +107,7 @@ let rec intersect l1 l2 =
 
 (* Convert list to string form of set *)
 let lst_to_str l =
-	"{"^String.concat ", " (uniq_sort l)^"}"
+	"{"^String.concat ", " l^"}"
 ;;
 
 (* Remove quotes from the string *)
@@ -142,6 +143,12 @@ let append_letter_to_list n l2 =
     | h::t -> aux (((destring n)^h)::l3) t
   in aux [] l2;;
 
+  let addLetter n l2 =
+  let rec aux l3 = function
+  | [] -> List.rev l3
+  | h::t -> aux ((n^h)::l3) t 
+  in aux [] l2;;
+
 (* Limit length of list l1 to length n *)
 let limit_list_length n l1 =
   let rec aux x l2 = function
@@ -157,6 +164,22 @@ let concat2 n l1 =
     | h :: t -> limit_list_length n (append_letter_to_list h ["aa"; "ab"; "ac"; "ba"; "bb"; "bc"; "ca"; "cb"; "cc"; "aaa"; "aab"; "aac"; "aba"; "abb"; "abc"; "aca"; "acb"; "acc"; "baa";"bab";"bac";"bba";"bbb";"bbc";"bca";"bcb";"bcc";"caa";"cab";"cac";"cba";"cbb";"cbc";"cca";"ccb";"ccc";"aaaa";"aaab";"aaac";"aaba"])
   in aux l1
 ;;
+
+let limitLength n l1 =
+  let rec aux x l2 = function
+    | [] -> l2
+    | h :: t -> if x < n then aux (x + 1) (h :: l2) t else List.rev l2
+  in aux 0 [] l1;;
+
+
+let concatModular n l1 l2=
+  let rec aux = function
+    | [] -> []
+    | h :: t -> limitLength n (addLetter h l2)
+  in aux l1;;
+
+let concatMaster n l1 =
+	concatModular n l1 ["aa"; "ab"; "ac"; "ba"; "bb"; "bc"; "ca"; "cb"; "cc"; "aaa"; "aab"; "aac"; "aba"; "abb"; "abc"; "aca"; "acb"; "acc"; "baa";"bab";"bac";"bba";"bbb";"bbc";"bca";"bcb";"bcc";"caa";"cab";"cac";"cba";"cbb";"cbc";"cca";"ccb";"ccc";"aaaa";"aaab";"aaac";"aaba";"aabb";"aabc";"aaca";"aacb";"aacc";"abaa";"abab";"abac";"abba";"abbb";"abbc";"abca";"abcb";"abcc";"acaa";"acab";"acac";"acba";"acbb";"acbc";"acca";"accb";"accc";"baaa";"baab"];;
 
 (*==== Type checking function ====*)
 let rec typeOf e =
@@ -196,13 +219,17 @@ let rec typeOf e =
         | _ -> raise (TypeError "Cannot cap anything not of type TechnoLang"))
     | Eol(e1, e2) ->
         (match (typeOf e1), (typeOf e2) with
-        | TechnoMultiLine, TechnoMultiLine -> TechnoMultiLine
+        | TechnoLang, TechnoLang -> TechnoLang
         | _ -> raise (TypeError "EOL: \";\" failed"))
     | TKleene(l, x, i) ->
         (match (typeOf l), (typeOf x), (typeOf i) with
         | TechnoLang, TechnoString, TechnoInt -> TechnoLang
         | TechnoMultiLine, TechnoMultiLine, TechnoMultiLine -> TechnoMultiLine
         | _ -> raise (TypeError "Input types to * are not of type TechnoString and TechnoInt"))
+    | TConcatABC(i, l) ->
+        (match (typeOf i), (typeOf l) with
+        | TechnoLang, TechnoInt -> TechnoLang
+        | _ -> raise (TypeError "Input types to concatABC is not of type TechnoLang and TechnoInt"))
     | _ -> raise (TypeError "Expression is not recognisable")
 ;;
 
@@ -235,11 +262,18 @@ let rec eval e =
     | (TAppendToList(TString(s), e2)) -> let e2' = eval e2 in (TAppendToList(TString(s), e2'))
     | (TAppendToList(e1, e2)) -> let e1' = eval e1 in TAppendToList(e1', e2)
 
-    | (TCap(TInt(i), TLang(l))) -> TLang(lst_to_str (limit_list_length i (str_to_lst l)))
+    | (TCap(TInt(i), TLang(l))) -> TLang(lst_to_str (limitLength i (str_to_lst l)))
     | (TCap(TInt(i), e2)) -> let e2' = eval e2 in TCap(TInt(i), e2')
     | (TCap(e1, e2)) -> let e1' = eval e1 in TCap(e1', e2)
 
     | (TKleene(TLang(l), TString(s), TInt(i))) -> TString(lst_to_str(kleene i (str_to_lst l) s))
+    | (TKleene(TLang(l), TString(s), e3)) -> let e3' = eval e3 in TKleene(TLang(l), TString(s), e3')
+    | (TKleene(TLang(l), e2, e3)) -> let e2' = eval e2 in TKleene(TLang(l), e2', e3)
+    | (TKleene(e1, e2, e3)) -> let e1' = eval e1 in TKleene(e1', e2, e3)
+
+    | (TConcatABC(TLang(l), TInt(i))) -> TLang(lst_to_str(concatMaster i (str_to_lst l)))
+    | (TConcatABC(TLang(l), e2)) -> let e2' = eval e2 in TConcatABC(TLang(l), e2')
+    | (TConcatABC(e1, e2)) -> let e1' = eval e1 in TConcatABC(e1', e2)
 
     | _ -> raise Terminated
 ;;
@@ -258,6 +292,12 @@ let rec evalloop e =
 
 let evalProg e = evalloop e;; (* <== Starts here *)
 
+let evalProg e =
+  match e with
+    | Eol(Eol (e1, e2), e3)  -> Eol (evalProg (Eol (e1, e2)), evalProg(e3))
+    | Eol(e1, e2) -> (Eol ((evalProg e1),(evalProg e2)))
+    | e1 -> (evalloop e)
+
 (*==== Printing methods ====*)
 let rec type_to_string tT =
   match tT with
@@ -266,10 +306,12 @@ let rec type_to_string tT =
     | TechnoString -> "string"
 ;;
 
-let print_res res =
+let rec print_res res =
   match res with
-    | (TInt n) -> print_int n
 		| (TLang x) -> print_string x
+    | Eol(TLang(l1), TLang(l2)) -> print_res (TLang (l1)); print_string "\n"; print_res (TLang(l2))
+    | Eol(Eol(TLang(l1), TLang(l2)), TLang(l3)) -> print_res (Eol(TLang(l1), TLang(l2))); print_string "\n"; print_res(TLang(l3))
+    | (TInt n) -> print_int n
     | (TString s) -> print_string s
     | _ -> raise NonBaseTypeResult
 ;;
