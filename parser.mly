@@ -14,10 +14,9 @@
 %token CAP KLEENE CONCATABC
 /* Highest precedence */
 %left EOL
-%nonassoc MAP
 %nonassoc LENGTH
 %nonassoc CONCAT APPENDTOLIST
-%nonassoc UNION INTERSECT
+%nonassoc UNION INTERSECT CAP
 /* Lowest precedece */
 %start parser_main
 %type <Techno.tech> parser_main
