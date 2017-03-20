@@ -442,10 +442,10 @@ state 34
 	CONCAT  shift 20
 	UNION  shift 21
 	INTERSECT  shift 22
-	EOL  shift 24
 	RPAREN  reduce 2
 	DELIM  reduce 2
 	EOF  reduce 2
+	EOL  reduce 2
 
 
 state 35
