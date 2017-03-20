@@ -292,7 +292,7 @@ let rec evalloop e =
     	raise StuckTerm
 ;;
 
-let evalProg e =
+let rec evalProg e =
   match e with
     | Eol(Eol (e1, e2), e3)  -> Eol (evalProg (Eol (e1, e2)), evalProg(e3))
     | Eol(e1, e2) -> (Eol ((evalProg e1),(evalProg e2)))
