@@ -10,8 +10,9 @@
    7       | expr INTERSECT expr
    8       | expr CONCAT expr
    9       | LENGTH LPAREN expr RPAREN
+  10       | APPENDTOLIST expr expr
 
-  10  %entry% : '\001' parser_main
+  11  %entry% : '\001' parser_main
 
 state 0
 	$accept : . %entry% $end  (0)
@@ -23,17 +24,18 @@ state 0
 
 
 state 1
-	%entry% : '\001' . parser_main  (10)
+	%entry% : '\001' . parser_main  (11)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
-	LPAREN  shift 7
+	APPENDTOLIST  shift 7
+	LPAREN  shift 8
 	.  error
 
-	parser_main  goto 8
-	expr  goto 9
+	parser_main  goto 9
+	expr  goto 10
 
 
 state 2
@@ -63,145 +65,208 @@ state 5
 state 6
 	expr : LENGTH . LPAREN expr RPAREN  (9)
 
-	LPAREN  shift 10
+	LPAREN  shift 11
 	.  error
 
 
 state 7
+	expr : APPENDTOLIST . expr expr  (10)
+
+	LANGUAGE  shift 3
+	STRING  shift 4
+	INT  shift 5
+	LENGTH  shift 6
+	APPENDTOLIST  shift 7
+	LPAREN  shift 8
+	.  error
+
+	expr  goto 12
+
+
+state 8
 	expr : LPAREN . expr RPAREN  (5)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
-	LPAREN  shift 7
+	APPENDTOLIST  shift 7
+	LPAREN  shift 8
 	.  error
 
-	expr  goto 11
-
-
-state 8
-	%entry% : '\001' parser_main .  (10)
-
-	.  reduce 10
+	expr  goto 13
 
 
 state 9
+	%entry% : '\001' parser_main .  (11)
+
+	.  reduce 11
+
+
+state 10
 	parser_main : expr . EOL  (1)
 	expr : expr . UNION expr  (6)
 	expr : expr . INTERSECT expr  (7)
 	expr : expr . CONCAT expr  (8)
 
-	CONCAT  shift 12
-	UNION  shift 13
-	INTERSECT  shift 14
-	EOL  shift 15
+	CONCAT  shift 14
+	UNION  shift 15
+	INTERSECT  shift 16
+	EOL  shift 17
 	.  error
 
 
-state 10
+state 11
 	expr : LENGTH LPAREN . expr RPAREN  (9)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
-	LPAREN  shift 7
+	APPENDTOLIST  shift 7
+	LPAREN  shift 8
 	.  error
 
-	expr  goto 16
+	expr  goto 18
 
 
-state 11
+state 12
+	expr : expr . UNION expr  (6)
+	expr : expr . INTERSECT expr  (7)
+	expr : expr . CONCAT expr  (8)
+	expr : APPENDTOLIST expr . expr  (10)
+
+	LANGUAGE  shift 3
+	STRING  shift 4
+	INT  shift 5
+	CONCAT  shift 14
+	LENGTH  shift 6
+	APPENDTOLIST  shift 7
+	LPAREN  shift 8
+	UNION  shift 15
+	INTERSECT  shift 16
+	.  error
+
+	expr  goto 19
+
+
+state 13
 	expr : LPAREN expr . RPAREN  (5)
 	expr : expr . UNION expr  (6)
 	expr : expr . INTERSECT expr  (7)
 	expr : expr . CONCAT expr  (8)
 
-	CONCAT  shift 12
-	RPAREN  shift 17
-	UNION  shift 13
-	INTERSECT  shift 14
+	CONCAT  shift 14
+	RPAREN  shift 20
+	UNION  shift 15
+	INTERSECT  shift 16
 	.  error
 
 
-state 12
+state 14
 	expr : expr CONCAT . expr  (8)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
-	LPAREN  shift 7
+	APPENDTOLIST  shift 7
+	LPAREN  shift 8
 	.  error
 
-	expr  goto 18
+	expr  goto 21
 
 
-state 13
+state 15
 	expr : expr UNION . expr  (6)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
-	LPAREN  shift 7
+	APPENDTOLIST  shift 7
+	LPAREN  shift 8
 	.  error
 
-	expr  goto 19
+	expr  goto 22
 
 
-state 14
+state 16
 	expr : expr INTERSECT . expr  (7)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
-	LPAREN  shift 7
+	APPENDTOLIST  shift 7
+	LPAREN  shift 8
 	.  error
 
-	expr  goto 20
-
-
-state 15
-	parser_main : expr EOL .  (1)
-
-	.  reduce 1
-
-
-state 16
-	expr : expr . UNION expr  (6)
-	expr : expr . INTERSECT expr  (7)
-	expr : expr . CONCAT expr  (8)
-	expr : LENGTH LPAREN expr . RPAREN  (9)
-
-	CONCAT  shift 12
-	RPAREN  shift 21
-	UNION  shift 13
-	INTERSECT  shift 14
-	.  error
+	expr  goto 23
 
 
 state 17
-	expr : LPAREN expr RPAREN .  (5)
+	parser_main : expr EOL .  (1)
 
-	.  reduce 5
+	.  reduce 1
 
 
 state 18
 	expr : expr . UNION expr  (6)
 	expr : expr . INTERSECT expr  (7)
 	expr : expr . CONCAT expr  (8)
+	expr : LENGTH LPAREN expr . RPAREN  (9)
+
+	CONCAT  shift 14
+	RPAREN  shift 24
+	UNION  shift 15
+	INTERSECT  shift 16
+	.  error
+
+
+state 19
+	expr : expr . UNION expr  (6)
+	expr : expr . INTERSECT expr  (7)
+	expr : expr . CONCAT expr  (8)
+	expr : APPENDTOLIST expr expr .  (10)
+
+	UNION  shift 15
+	INTERSECT  shift 16
+	LANGUAGE  reduce 10
+	STRING  reduce 10
+	INT  reduce 10
+	LENGTH  reduce 10
+	APPENDTOLIST  reduce 10
+	LPAREN  reduce 10
+	RPAREN  reduce 10
+	EOL  reduce 10
+
+
+state 20
+	expr : LPAREN expr RPAREN .  (5)
+
+	.  reduce 5
+
+
+state 21
+	expr : expr . UNION expr  (6)
+	expr : expr . INTERSECT expr  (7)
+	expr : expr . CONCAT expr  (8)
 	expr : expr CONCAT expr .  (8)
 
-	UNION  shift 13
-	INTERSECT  shift 14
+	UNION  shift 15
+	INTERSECT  shift 16
+	LANGUAGE  reduce 8
+	STRING  reduce 8
+	INT  reduce 8
+	LENGTH  reduce 8
+	APPENDTOLIST  reduce 8
+	LPAREN  reduce 8
 	RPAREN  reduce 8
 	EOL  reduce 8
 
 
-state 19
+state 22
 	expr : expr . UNION expr  (6)
 	expr : expr UNION expr .  (6)
 	expr : expr . INTERSECT expr  (7)
@@ -210,7 +275,7 @@ state 19
 	.  reduce 6
 
 
-state 20
+state 23
 	expr : expr . UNION expr  (6)
 	expr : expr . INTERSECT expr  (7)
 	expr : expr INTERSECT expr .  (7)
@@ -219,11 +284,11 @@ state 20
 	.  reduce 7
 
 
-state 21
+state 24
 	expr : LENGTH LPAREN expr RPAREN .  (9)
 
 	.  reduce 9
 
 
-13 terminals, 4 nonterminals
-11 grammar rules, 22 states
+16 terminals, 4 nonterminals
+12 grammar rules, 25 states

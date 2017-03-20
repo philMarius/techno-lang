@@ -15,6 +15,8 @@ type tech =
   | TString of string
   | TConcat of tech * tech
   | TStrLen of tech
+	| TAppendToList of tech * tech
+
 
 val typeProg : tech -> technoType
 val evalProg : tech -> tech

@@ -4,7 +4,7 @@ Techno.cmo : Techno.cmi
 Techno.cmx : Techno.cmi
 lexer.cmo : parser.cmi
 lexer.cmx : parser.cmx
-main.cmo : Techno.cmi parser.cmi lexer.cmo
-main.cmx : Techno.cmx parser.cmx lexer.cmx
+mysplinterpreter.cmo : Techno.cmi parser.cmi lexer.cmo
+mysplinterpreter.cmx : Techno.cmx parser.cmx lexer.cmx
 parser.cmo : Techno.cmi parser.cmi
 parser.cmx : Techno.cmx parser.cmi

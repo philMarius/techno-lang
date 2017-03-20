@@ -4,10 +4,13 @@ type token =
   | INT of (int)
   | CONCAT
   | LENGTH
+  | APPENDTOLIST
   | LPAREN
   | RPAREN
   | UNION
   | INTERSECT
+  | EMPTYWORD
+  | DELIM
   | EOL
 
 val parser_main :

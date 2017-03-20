@@ -1,1 +1,1 @@
-strlen("Test string, testing this shit.");;
+prefixToList "x" {a,b,c,d};;
