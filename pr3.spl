@@ -1,2 +1,2 @@
-cap($last_line, $1 N $2);
-cap($last_line, $1 N $3);;
+cap($last_line, ($1 N $2));
+cap($last_line, ($1 N $3));;

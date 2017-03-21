@@ -5,6 +5,7 @@ type token =
   | CONCAT
   | LENGTH
   | APPENDTOLIST
+  | POSTFIXTOLIST
   | LPAREN
   | RPAREN
   | UNION

@@ -9,14 +9,15 @@
    6       | LPAREN expr RPAREN
    7       | expr UNION expr
    8       | expr INTERSECT expr
-   9       | expr CONCAT expr
+   9       | LPAREN expr CONCAT expr RPAREN
   10       | LENGTH LPAREN expr RPAREN
   11       | APPENDTOLIST LPAREN expr DELIM expr RPAREN
-  12       | CAP LPAREN expr DELIM expr RPAREN
-  13       | KLEENE LPAREN expr DELIM expr DELIM expr RPAREN
-  14       | CONCATABC LPAREN expr DELIM expr RPAREN
+  12       | POSTFIXTOLIST LPAREN expr DELIM expr RPAREN
+  13       | CAP LPAREN expr DELIM expr RPAREN
+  14       | KLEENE LPAREN expr DELIM expr RPAREN
+  15       | CONCATABC LPAREN expr DELIM expr RPAREN
 
-  15  %entry% : '\001' parser_main
+  16  %entry% : '\001' parser_main
 
 state 0
 	$accept : . %entry% $end  (0)
@@ -28,21 +29,22 @@ state 0
 
 
 state 1
-	%entry% : '\001' . parser_main  (15)
+	%entry% : '\001' . parser_main  (16)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
-	parser_main  goto 12
-	expr  goto 13
+	parser_main  goto 13
+	expr  goto 14
 
 
 state 2
@@ -72,77 +74,84 @@ state 5
 state 6
 	expr : LENGTH . LPAREN expr RPAREN  (10)
 
-	LPAREN  shift 14
+	LPAREN  shift 15
 	.  error
 
 
 state 7
 	expr : APPENDTOLIST . LPAREN expr DELIM expr RPAREN  (11)
 
-	LPAREN  shift 15
+	LPAREN  shift 16
 	.  error
 
 
 state 8
+	expr : POSTFIXTOLIST . LPAREN expr DELIM expr RPAREN  (12)
+
+	LPAREN  shift 17
+	.  error
+
+
+state 9
 	expr : LPAREN . expr RPAREN  (6)
+	expr : LPAREN . expr CONCAT expr RPAREN  (9)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
-	expr  goto 16
-
-
-state 9
-	expr : CAP . LPAREN expr DELIM expr RPAREN  (12)
-
-	LPAREN  shift 17
-	.  error
+	expr  goto 18
 
 
 state 10
-	expr : KLEENE . LPAREN expr DELIM expr DELIM expr RPAREN  (13)
-
-	LPAREN  shift 18
-	.  error
-
-
-state 11
-	expr : CONCATABC . LPAREN expr DELIM expr RPAREN  (14)
+	expr : CAP . LPAREN expr DELIM expr RPAREN  (13)
 
 	LPAREN  shift 19
 	.  error
 
 
-state 12
-	%entry% : '\001' parser_main .  (15)
+state 11
+	expr : KLEENE . LPAREN expr DELIM expr RPAREN  (14)
 
-	.  reduce 15
+	LPAREN  shift 20
+	.  error
+
+
+state 12
+	expr : CONCATABC . LPAREN expr DELIM expr RPAREN  (15)
+
+	LPAREN  shift 21
+	.  error
 
 
 state 13
+	%entry% : '\001' parser_main .  (16)
+
+	.  reduce 16
+
+
+state 14
 	parser_main : expr . EOF  (1)
 	expr : expr . EOL expr  (2)
 	expr : expr . UNION expr  (7)
 	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
 
-	CONCAT  shift 20
-	UNION  shift 21
-	INTERSECT  shift 22
-	EOF  shift 23
-	EOL  shift 24
+	UNION  shift 22
+	INTERSECT  shift 23
+	EOF  shift 24
+	EOL  shift 25
 	.  error
 
 
-state 14
+state 15
 	expr : LENGTH LPAREN . expr RPAREN  (10)
 
 	LANGUAGE  shift 3
@@ -150,16 +159,17 @@ state 14
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
-	expr  goto 25
+	expr  goto 26
 
 
-state 15
+state 16
 	expr : APPENDTOLIST LPAREN . expr DELIM expr RPAREN  (11)
 
 	LANGUAGE  shift 3
@@ -167,99 +177,104 @@ state 15
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
-	expr  goto 26
-
-
-state 16
-	expr : expr . EOL expr  (2)
-	expr : LPAREN expr . RPAREN  (6)
-	expr : expr . UNION expr  (7)
-	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-
-	CONCAT  shift 20
-	RPAREN  shift 27
-	UNION  shift 21
-	INTERSECT  shift 22
-	EOL  shift 24
-	.  error
+	expr  goto 27
 
 
 state 17
-	expr : CAP LPAREN . expr DELIM expr RPAREN  (12)
+	expr : POSTFIXTOLIST LPAREN . expr DELIM expr RPAREN  (12)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
 	expr  goto 28
 
 
 state 18
-	expr : KLEENE LPAREN . expr DELIM expr DELIM expr RPAREN  (13)
+	expr : expr . EOL expr  (2)
+	expr : LPAREN expr . RPAREN  (6)
+	expr : expr . UNION expr  (7)
+	expr : expr . INTERSECT expr  (8)
+	expr : LPAREN expr . CONCAT expr RPAREN  (9)
 
-	LANGUAGE  shift 3
-	STRING  shift 4
-	INT  shift 5
-	LENGTH  shift 6
-	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	CONCAT  shift 29
+	RPAREN  shift 30
+	UNION  shift 22
+	INTERSECT  shift 23
+	EOL  shift 25
 	.  error
-
-	expr  goto 29
 
 
 state 19
-	expr : CONCATABC LPAREN . expr DELIM expr RPAREN  (14)
+	expr : CAP LPAREN . expr DELIM expr RPAREN  (13)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
-	.  error
-
-	expr  goto 30
-
-
-state 20
-	expr : expr CONCAT . expr  (9)
-
-	LANGUAGE  shift 3
-	STRING  shift 4
-	INT  shift 5
-	LENGTH  shift 6
-	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
 	expr  goto 31
 
 
+state 20
+	expr : KLEENE LPAREN . expr DELIM expr RPAREN  (14)
+
+	LANGUAGE  shift 3
+	STRING  shift 4
+	INT  shift 5
+	LENGTH  shift 6
+	APPENDTOLIST  shift 7
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
+	.  error
+
+	expr  goto 32
+
+
 state 21
+	expr : CONCATABC LPAREN . expr DELIM expr RPAREN  (15)
+
+	LANGUAGE  shift 3
+	STRING  shift 4
+	INT  shift 5
+	LENGTH  shift 6
+	APPENDTOLIST  shift 7
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
+	.  error
+
+	expr  goto 33
+
+
+state 22
 	expr : expr UNION . expr  (7)
 
 	LANGUAGE  shift 3
@@ -267,16 +282,17 @@ state 21
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
-	expr  goto 32
+	expr  goto 34
 
 
-state 22
+state 23
 	expr : expr INTERSECT . expr  (8)
 
 	LANGUAGE  shift 3
@@ -284,22 +300,23 @@ state 22
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
-	expr  goto 33
+	expr  goto 35
 
 
-state 23
+state 24
 	parser_main : expr EOF .  (1)
 
 	.  reduce 1
 
 
-state 24
+state 25
 	expr : expr EOL . expr  (2)
 
 	LANGUAGE  shift 3
@@ -307,154 +324,158 @@ state 24
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
-	expr  goto 34
-
-
-state 25
-	expr : expr . EOL expr  (2)
-	expr : expr . UNION expr  (7)
-	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-	expr : LENGTH LPAREN expr . RPAREN  (10)
-
-	CONCAT  shift 20
-	RPAREN  shift 35
-	UNION  shift 21
-	INTERSECT  shift 22
-	EOL  shift 24
-	.  error
+	expr  goto 36
 
 
 state 26
 	expr : expr . EOL expr  (2)
 	expr : expr . UNION expr  (7)
 	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-	expr : APPENDTOLIST LPAREN expr . DELIM expr RPAREN  (11)
+	expr : LENGTH LPAREN expr . RPAREN  (10)
 
-	CONCAT  shift 20
-	UNION  shift 21
-	INTERSECT  shift 22
-	DELIM  shift 36
-	EOL  shift 24
+	RPAREN  shift 37
+	UNION  shift 22
+	INTERSECT  shift 23
+	EOL  shift 25
 	.  error
 
 
 state 27
-	expr : LPAREN expr RPAREN .  (6)
+	expr : expr . EOL expr  (2)
+	expr : expr . UNION expr  (7)
+	expr : expr . INTERSECT expr  (8)
+	expr : APPENDTOLIST LPAREN expr . DELIM expr RPAREN  (11)
 
-	.  reduce 6
+	UNION  shift 22
+	INTERSECT  shift 23
+	DELIM  shift 38
+	EOL  shift 25
+	.  error
 
 
 state 28
 	expr : expr . EOL expr  (2)
 	expr : expr . UNION expr  (7)
 	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-	expr : CAP LPAREN expr . DELIM expr RPAREN  (12)
+	expr : POSTFIXTOLIST LPAREN expr . DELIM expr RPAREN  (12)
 
-	CONCAT  shift 20
-	UNION  shift 21
-	INTERSECT  shift 22
-	DELIM  shift 37
-	EOL  shift 24
+	UNION  shift 22
+	INTERSECT  shift 23
+	DELIM  shift 39
+	EOL  shift 25
 	.  error
 
 
 state 29
-	expr : expr . EOL expr  (2)
-	expr : expr . UNION expr  (7)
-	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-	expr : KLEENE LPAREN expr . DELIM expr DELIM expr RPAREN  (13)
+	expr : LPAREN expr CONCAT . expr RPAREN  (9)
 
-	CONCAT  shift 20
-	UNION  shift 21
-	INTERSECT  shift 22
-	DELIM  shift 38
-	EOL  shift 24
+	LANGUAGE  shift 3
+	STRING  shift 4
+	INT  shift 5
+	LENGTH  shift 6
+	APPENDTOLIST  shift 7
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
+
+	expr  goto 40
 
 
 state 30
-	expr : expr . EOL expr  (2)
-	expr : expr . UNION expr  (7)
-	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-	expr : CONCATABC LPAREN expr . DELIM expr RPAREN  (14)
+	expr : LPAREN expr RPAREN .  (6)
 
-	CONCAT  shift 20
-	UNION  shift 21
-	INTERSECT  shift 22
-	DELIM  shift 39
-	EOL  shift 24
-	.  error
+	.  reduce 6
 
 
 state 31
 	expr : expr . EOL expr  (2)
 	expr : expr . UNION expr  (7)
 	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-	expr : expr CONCAT expr .  (9)
+	expr : CAP LPAREN expr . DELIM expr RPAREN  (13)
 
-	UNION  shift 21
-	INTERSECT  shift 22
-	RPAREN  reduce 9
-	DELIM  reduce 9
-	EOF  reduce 9
-	EOL  reduce 9
+	UNION  shift 22
+	INTERSECT  shift 23
+	DELIM  shift 41
+	EOL  shift 25
+	.  error
 
 
 state 32
 	expr : expr . EOL expr  (2)
 	expr : expr . UNION expr  (7)
-	expr : expr UNION expr .  (7)
 	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
+	expr : KLEENE LPAREN expr . DELIM expr RPAREN  (14)
 
-	.  reduce 7
+	UNION  shift 22
+	INTERSECT  shift 23
+	DELIM  shift 42
+	EOL  shift 25
+	.  error
 
 
 state 33
 	expr : expr . EOL expr  (2)
 	expr : expr . UNION expr  (7)
 	expr : expr . INTERSECT expr  (8)
-	expr : expr INTERSECT expr .  (8)
-	expr : expr . CONCAT expr  (9)
+	expr : CONCATABC LPAREN expr . DELIM expr RPAREN  (15)
 
-	.  reduce 8
+	UNION  shift 22
+	INTERSECT  shift 23
+	DELIM  shift 43
+	EOL  shift 25
+	.  error
 
 
 state 34
 	expr : expr . EOL expr  (2)
+	expr : expr . UNION expr  (7)
+	expr : expr UNION expr .  (7)
+	expr : expr . INTERSECT expr  (8)
+
+	.  reduce 7
+
+
+state 35
+	expr : expr . EOL expr  (2)
+	expr : expr . UNION expr  (7)
+	expr : expr . INTERSECT expr  (8)
+	expr : expr INTERSECT expr .  (8)
+
+	.  reduce 8
+
+
+state 36
+	expr : expr . EOL expr  (2)
 	expr : expr EOL expr .  (2)
 	expr : expr . UNION expr  (7)
 	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
 
-	CONCAT  shift 20
-	UNION  shift 21
-	INTERSECT  shift 22
+	UNION  shift 22
+	INTERSECT  shift 23
+	CONCAT  reduce 2
 	RPAREN  reduce 2
 	DELIM  reduce 2
 	EOF  reduce 2
 	EOL  reduce 2
 
 
-state 35
+state 37
 	expr : LENGTH LPAREN expr RPAREN .  (10)
 
 	.  reduce 10
 
 
-state 36
+state 38
 	expr : APPENDTOLIST LPAREN expr DELIM . expr RPAREN  (11)
 
 	LANGUAGE  shift 3
@@ -462,181 +483,201 @@ state 36
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
-	expr  goto 40
-
-
-state 37
-	expr : CAP LPAREN expr DELIM . expr RPAREN  (12)
-
-	LANGUAGE  shift 3
-	STRING  shift 4
-	INT  shift 5
-	LENGTH  shift 6
-	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
-	.  error
-
-	expr  goto 41
-
-
-state 38
-	expr : KLEENE LPAREN expr DELIM . expr DELIM expr RPAREN  (13)
-
-	LANGUAGE  shift 3
-	STRING  shift 4
-	INT  shift 5
-	LENGTH  shift 6
-	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
-	.  error
-
-	expr  goto 42
+	expr  goto 44
 
 
 state 39
-	expr : CONCATABC LPAREN expr DELIM . expr RPAREN  (14)
+	expr : POSTFIXTOLIST LPAREN expr DELIM . expr RPAREN  (12)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
-	expr  goto 43
+	expr  goto 45
 
 
 state 40
 	expr : expr . EOL expr  (2)
 	expr : expr . UNION expr  (7)
 	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-	expr : APPENDTOLIST LPAREN expr DELIM expr . RPAREN  (11)
+	expr : LPAREN expr CONCAT expr . RPAREN  (9)
 
-	CONCAT  shift 20
-	RPAREN  shift 44
-	UNION  shift 21
-	INTERSECT  shift 22
-	EOL  shift 24
+	RPAREN  shift 46
+	UNION  shift 22
+	INTERSECT  shift 23
+	EOL  shift 25
 	.  error
 
 
 state 41
-	expr : expr . EOL expr  (2)
-	expr : expr . UNION expr  (7)
-	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-	expr : CAP LPAREN expr DELIM expr . RPAREN  (12)
-
-	CONCAT  shift 20
-	RPAREN  shift 45
-	UNION  shift 21
-	INTERSECT  shift 22
-	EOL  shift 24
-	.  error
-
-
-state 42
-	expr : expr . EOL expr  (2)
-	expr : expr . UNION expr  (7)
-	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-	expr : KLEENE LPAREN expr DELIM expr . DELIM expr RPAREN  (13)
-
-	CONCAT  shift 20
-	UNION  shift 21
-	INTERSECT  shift 22
-	DELIM  shift 46
-	EOL  shift 24
-	.  error
-
-
-state 43
-	expr : expr . EOL expr  (2)
-	expr : expr . UNION expr  (7)
-	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-	expr : CONCATABC LPAREN expr DELIM expr . RPAREN  (14)
-
-	CONCAT  shift 20
-	RPAREN  shift 47
-	UNION  shift 21
-	INTERSECT  shift 22
-	EOL  shift 24
-	.  error
-
-
-state 44
-	expr : APPENDTOLIST LPAREN expr DELIM expr RPAREN .  (11)
-
-	.  reduce 11
-
-
-state 45
-	expr : CAP LPAREN expr DELIM expr RPAREN .  (12)
-
-	.  reduce 12
-
-
-state 46
-	expr : KLEENE LPAREN expr DELIM expr DELIM . expr RPAREN  (13)
+	expr : CAP LPAREN expr DELIM . expr RPAREN  (13)
 
 	LANGUAGE  shift 3
 	STRING  shift 4
 	INT  shift 5
 	LENGTH  shift 6
 	APPENDTOLIST  shift 7
-	LPAREN  shift 8
-	CAP  shift 9
-	KLEENE  shift 10
-	CONCATABC  shift 11
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
+	.  error
+
+	expr  goto 47
+
+
+state 42
+	expr : KLEENE LPAREN expr DELIM . expr RPAREN  (14)
+
+	LANGUAGE  shift 3
+	STRING  shift 4
+	INT  shift 5
+	LENGTH  shift 6
+	APPENDTOLIST  shift 7
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
 	.  error
 
 	expr  goto 48
 
 
-state 47
-	expr : CONCATABC LPAREN expr DELIM expr RPAREN .  (14)
+state 43
+	expr : CONCATABC LPAREN expr DELIM . expr RPAREN  (15)
 
-	.  reduce 14
+	LANGUAGE  shift 3
+	STRING  shift 4
+	INT  shift 5
+	LENGTH  shift 6
+	APPENDTOLIST  shift 7
+	POSTFIXTOLIST  shift 8
+	LPAREN  shift 9
+	CAP  shift 10
+	KLEENE  shift 11
+	CONCATABC  shift 12
+	.  error
+
+	expr  goto 49
+
+
+state 44
+	expr : expr . EOL expr  (2)
+	expr : expr . UNION expr  (7)
+	expr : expr . INTERSECT expr  (8)
+	expr : APPENDTOLIST LPAREN expr DELIM expr . RPAREN  (11)
+
+	RPAREN  shift 50
+	UNION  shift 22
+	INTERSECT  shift 23
+	EOL  shift 25
+	.  error
+
+
+state 45
+	expr : expr . EOL expr  (2)
+	expr : expr . UNION expr  (7)
+	expr : expr . INTERSECT expr  (8)
+	expr : POSTFIXTOLIST LPAREN expr DELIM expr . RPAREN  (12)
+
+	RPAREN  shift 51
+	UNION  shift 22
+	INTERSECT  shift 23
+	EOL  shift 25
+	.  error
+
+
+state 46
+	expr : LPAREN expr CONCAT expr RPAREN .  (9)
+
+	.  reduce 9
+
+
+state 47
+	expr : expr . EOL expr  (2)
+	expr : expr . UNION expr  (7)
+	expr : expr . INTERSECT expr  (8)
+	expr : CAP LPAREN expr DELIM expr . RPAREN  (13)
+
+	RPAREN  shift 52
+	UNION  shift 22
+	INTERSECT  shift 23
+	EOL  shift 25
+	.  error
 
 
 state 48
 	expr : expr . EOL expr  (2)
 	expr : expr . UNION expr  (7)
 	expr : expr . INTERSECT expr  (8)
-	expr : expr . CONCAT expr  (9)
-	expr : KLEENE LPAREN expr DELIM expr DELIM expr . RPAREN  (13)
+	expr : KLEENE LPAREN expr DELIM expr . RPAREN  (14)
 
-	CONCAT  shift 20
-	RPAREN  shift 49
-	UNION  shift 21
-	INTERSECT  shift 22
-	EOL  shift 24
+	RPAREN  shift 53
+	UNION  shift 22
+	INTERSECT  shift 23
+	EOL  shift 25
 	.  error
 
 
 state 49
-	expr : KLEENE LPAREN expr DELIM expr DELIM expr RPAREN .  (13)
+	expr : expr . EOL expr  (2)
+	expr : expr . UNION expr  (7)
+	expr : expr . INTERSECT expr  (8)
+	expr : CONCATABC LPAREN expr DELIM expr . RPAREN  (15)
+
+	RPAREN  shift 54
+	UNION  shift 22
+	INTERSECT  shift 23
+	EOL  shift 25
+	.  error
+
+
+state 50
+	expr : APPENDTOLIST LPAREN expr DELIM expr RPAREN .  (11)
+
+	.  reduce 11
+
+
+state 51
+	expr : POSTFIXTOLIST LPAREN expr DELIM expr RPAREN .  (12)
+
+	.  reduce 12
+
+
+state 52
+	expr : CAP LPAREN expr DELIM expr RPAREN .  (13)
 
 	.  reduce 13
 
 
-21 terminals, 4 nonterminals
-16 grammar rules, 50 states
+state 53
+	expr : KLEENE LPAREN expr DELIM expr RPAREN .  (14)
+
+	.  reduce 14
+
+
+state 54
+	expr : CONCATABC LPAREN expr DELIM expr RPAREN .  (15)
+
+	.  reduce 15
+
+
+22 terminals, 4 nonterminals
+17 grammar rules, 55 states

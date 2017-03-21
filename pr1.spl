@@ -1,1 +1,1 @@
-cap($last_line, prefixToList("a", $1));;
+cap($last_line, ("a" . $1));;

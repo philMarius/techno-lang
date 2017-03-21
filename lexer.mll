@@ -44,6 +44,7 @@ rule lexer_main = parse
 	| '.'							{ CONCAT }
 	| "strlen"						{ LENGTH }
 	| "prefixToList"				{ APPENDTOLIST }
+	| "postfixToList"				{ POSTFIXTOLIST }
 	| ','							{ DELIM }
 	| ':'							{ EMPTYWORD }
 	| '*'							{ KLEENE }

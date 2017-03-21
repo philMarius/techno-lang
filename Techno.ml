@@ -28,8 +28,9 @@ type tech =
 	| TStrLen of tech
 	| TAppendToList of tech * tech
 	| TCap of tech * tech
-	| TKleene of tech * tech * tech 
+	| TKleene of tech * tech
 	| TConcatABC of tech * tech
+	| TPostfixToList of tech * tech
 
 let rec isValue e =
 	match e with
@@ -73,21 +74,24 @@ let uniq_sort l =
 
 let alphabet l1 =
 	List.sort String.compare l1;;
-	
-(* Remove quotes from the string *)
-(* let rm_quotes s =
-	Str.global_replace (Str.regexp "\"") "" s
-;;	 *)
 
 let rm_quotes s =
 	String.sub s 1 ((String.length s) - 2);;
 
-let appender n list =
-	let destring x = if (String.contains x '\"') then (rm_quotes x) else x in
+let destring x = if (String.contains x '\"') then (rm_quotes x) else x;;
+
+let appender list letter =
+	let rec aux acc = function
+		| [] -> acc
+		| ":" :: t -> aux (letter :: acc) t
+		| h::t -> aux ((letter^h)::acc) t in
+	aux [] list;;
+
+let postfixer n list =
 	let rec aux acc = function
 		| [] -> acc
 		| ":" :: t -> aux acc t
-		| h::t -> aux (((destring n)^h)::acc) t in
+		| h :: t -> aux ((h^(destring n)) :: acc) t in
 	aux [] list;;
 
 let removeDuplicates l1 = 
@@ -96,21 +100,18 @@ let removeDuplicates l1 =
 			| h :: t -> if List.mem h l2 then aux l2 t else aux (h :: l2) t
 	in aux [] l1;;
 
+let rm_spaces s =
+	Str.global_replace (Str.regexp " ") "" s;;
 
 (* Convert string form of set to list *)
 let str_to_lst str =
 	let rm_paren str =
 		String.sub str 1 ((String.length str) - 2)
-	in alphabet (Str.split (Str.regexp ",") (rm_paren str))
-;;
-
-(* Union of two sets *)
-let union l1 l2 =
-	uniq_sort (append l1 l2)
+	in alphabet (Str.split (Str.regexp ",") (rm_paren (rm_spaces str)))
 ;;
 
 (* Different union function *)
-let union2 l1 l2 =
+let union l1 l2 =
 	uniq_sort (List.merge compare l1 l2)
 ;;
 
@@ -141,22 +142,19 @@ let add_quotes s =
 ;;
 
 (* Generate string of length l comprised of string n    --> Use String.make *)
-let gen_str l n =
-	let rec aux l n acc =
-		if n>0 then aux l (n-1) acc ^ l else ""
-	in aux l n "";;
+let string_repeat n s =
+	String.concat "" (Array.to_list (Array.make n (destring s)));;
 
 (* Generate list of length n of singleton list l1 of letter s *)
 let kleene n l1 s =
 	let rec aux x l2 = function
 		| [] -> l2
-		| h::t -> if x < n then aux (x+1) ((h^(gen_str (rm_quotes s) x)) :: l2) l1 else List.rev l2
+		| h::t -> if x < n then aux (x+1) ((h^(string_repeat x (rm_quotes s))) :: l2) l1 else List.rev l2
 	in aux 0 [] l1
 ;;
 
 (* Take letter n and concatenate it with every element in list l2 *)
 let append_letter_to_list n l2 =
-	let destring x = if (String.contains x '\"') then (rm_quotes x) else x in
 	let rec aux l3 = function
 		| [] -> List.rev l3
 		| ":" :: t -> aux ((destring n) :: l3) t
@@ -177,13 +175,6 @@ let limit_list_length n l1 =
 	in aux n [] l1
 ;;
 
-let concat2 n l1 =
-	let rec aux = function
-		| [] -> []
-		| h :: t -> limit_list_length n (append_letter_to_list h ["aa"; "ab"; "ac"; "ba"; "bb"; "bc"; "ca"; "cb"; "cc"; "aaa"; "aab"; "aac"; "aba"; "abb"; "abc"; "aca"; "acb"; "acc"; "baa";"bab";"bac";"bba";"bbb";"bbc";"bca";"bcb";"bcc";"caa";"cab";"cac";"cba";"cbb";"cbc";"cca";"ccb";"ccc";"aaaa";"aaab";"aaac";"aaba"])
-	in aux l1
-;;
-
 let limitLength n l1 =
 	let rec aux x l2 = function
 		| [] -> l2
@@ -191,15 +182,17 @@ let limitLength n l1 =
 	in aux 0 [] l1;;
 
 let rec cap i l =
-  match (i, l) with
-  | 0, h :: t -> []
-  | _, [] -> l
-  | _, h :: t-> h :: cap (i - 1) t
+	match (i, l) with
+	| 0, h :: t -> []
+	| _, [] -> l
+	| _, h :: t-> h :: cap (i - 1) t
 ;;
 
 let appenderMaster n l1 =
-	let destring x = if (String.contains x '\"') then (rm_quotes x) else x in
-	removeDuplicates ( alphabet ( appender (destring n) l1));; 
+	removeDuplicates ( alphabet ( appender l1 (destring n)));;
+
+let postfixToList n l1 =
+	removeDuplicates (alphabet (postfixer (destring n) l1));;
 
 let sort_uniq_limit n l1 = 
 	limitLength n (removeDuplicates (alphabet l1));;
@@ -213,8 +206,23 @@ let concatModular n l1 l2=
 		| h :: t -> limitLength n (addLetter h l2)
 	in aux l1;;
 
+let concat l1 l2 =
+	let rec aux l3 = function
+		| [] -> l3
+		| h :: t -> aux (union (appender l2 h) l3) t in
+aux [] l1;;
+
 let concatMaster n l1 =
-	concatModular n l1 ["aa"; "ab"; "ac"; "ba"; "bb"; "bc"; "ca"; "cb"; "cc"; "aaa"; "aab"; "aac"; "aba"; "abb"; "abc"; "aca"; "acb"; "acc"; "baa";"bab";"bac";"bba";"bbb";"bbc";"bca";"bcb";"bcc";"caa";"cab";"cac";"cba";"cbb";"cbc";"cca";"ccb";"ccc";"aaaa";"aaab";"aaac";"aaba";"aabb";"aabc";"aaca";"aacb";"aacc";"abaa";"abab";"abac";"abba";"abbb";"abbc";"abca";"abcb";"abcc";"acaa";"acab";"acac";"acba";"acbb";"acbc";"acca";"accb";"accc";"baaa";"baab"];;
+	let rec aux x l3 = 
+		if x < n then aux (x+1) (concat l1 l3) else l3
+in aux 1 l1;;
+
+let kleeneIndividual n s=
+	let rec aux x l2 =
+		if x < n 
+		then aux (x+1) ((string_repeat x s) :: l2) 
+		else List.rev l2
+in aux 0 [];;
 
 (*==== Type checking function ====*)
 let rec typeOf e =
@@ -233,6 +241,13 @@ let rec typeOf e =
 		| TConcat(s1, s2) ->
 				(match (typeOf s1), (typeOf s2) with
 				| TechnoString, TechnoString -> TechnoString
+				| TechnoString, TechnoLang -> TechnoLang
+				| TechnoLang, TechnoString -> TechnoLang
+				| TechnoLang, TechnoLang -> TechnoLang
+				| TechnoLang, TechnoInt -> TechnoLang
+				| TechnoInt, TechnoLang -> TechnoLang
+				| TechnoInt, TechnoString -> TechnoString
+				| TechnoString, TechnoInt -> TechnoString
 				| _ -> raise (TypeError "Input type to concatenation is not of TechnoString type"))
 		| TStrLen(s) ->
 				(match typeOf s with
@@ -241,7 +256,10 @@ let rec typeOf e =
 		| TAppendToList(s,l) ->
 				(match (typeOf s), (typeOf l) with
 				| TechnoString, TechnoLang -> TechnoLang
-				| _ -> raise (TypeError "Input type to appendToList is not of TechnoString and / TechnoString type"))
+				| _ -> raise (TypeError "Input type to prefixToList is not of TechnoString and / or TechnoString type"))
+		| TPostfixToList(s,l) ->
+				(match (typeOf s), (typeOf l) with
+				| _ -> raise (TypeError "Input type to postfixToList is not of TechnoString and / or TechnoLang type"))
 		| TCap(i, e) ->
 				(match (typeOf i), (typeOf e) with
 				| TechnoInt, TechnoLang -> TechnoLang
@@ -250,10 +268,10 @@ let rec typeOf e =
 				(match (typeOf e1), (typeOf e2) with
 				| TechnoLang, TechnoLang -> TechnoLang
 				| _ -> raise (TypeError "EOL: \";\" failed"))
-		| TKleene(l, x, i) ->
-				(match (typeOf l), (typeOf x), (typeOf i) with
-				| TechnoLang, TechnoString, TechnoInt -> TechnoLang
-				| _ -> raise (TypeError "Input types to * are not of type TechnoString and TechnoInt"))
+		| TKleene(i, s) ->
+				(match (typeOf i), (typeOf s) with
+				| TechnoInt, TechnoString -> TechnoLang
+				| _ -> raise (TypeError "Input types to kleene are not of type TechnoString and TechnoInt"))
 		| TConcatABC(i, l) ->
 				(match (typeOf i), (typeOf l) with
 				| TechnoLang, TechnoInt -> TechnoLang
@@ -271,7 +289,7 @@ let rec eval e =
 		| (TString s) -> raise Terminated
 		| (TInt n) -> raise Terminated
 
-		| (TUnion(TLang(x), TLang(y))) -> TLang( lst_to_str(union2 (str_to_lst x) (str_to_lst y)))
+		| (TUnion(TLang(x), TLang(y))) -> TLang( lst_to_str(union (str_to_lst x) (str_to_lst y)))
 		| (TUnion(TLang(x), e2)) -> let e2' = eval e2 in (TUnion(TLang(x), e2'))
 		| (TUnion(e1, e2)) -> let e1' = eval e1 in (TUnion(e1', e2))
 
@@ -280,7 +298,16 @@ let rec eval e =
 		| (TIntersection(e1, e2)) -> let e1' = eval e1 in TIntersection(e1', e2)
 
 		| (TConcat(TString(s1), TString(s2))) -> (TString(((rm_quotes s1)^(rm_quotes s2))))
+		| (TConcat(TString(s), TLang(l))) -> (TLang(lst_to_str(sort_uniq (appenderMaster s (str_to_lst l)))))
+		| (TConcat(TLang(l), TString(s))) -> (TLang(lst_to_str(sort_uniq (postfixToList s (str_to_lst l)))))
+		| (TConcat(TLang(l1), TLang(l2))) -> (TLang(lst_to_str(sort_uniq (concat (str_to_lst l1) (str_to_lst l2)))))
+		| (TConcat(TLang(l), TInt(i))) -> (TLang(lst_to_str(sort_uniq (concatMaster i (str_to_lst l)))))
+		| (TConcat(TInt(i), TLang(l))) -> (TLang(lst_to_str(sort_uniq (concatMaster i (str_to_lst l)))))
+		| (TConcat(TInt(i), TString(s))) -> (TString(string_repeat i s))
+		| (TConcat(TString(s), TInt(i))) -> (TString(string_repeat i s))
+		| (TConcat(TLang(l), e2)) -> let e2' = eval e2 in (TConcat(TLang(l), e2'))
 		| (TConcat(TString(s1), e2)) -> let e2' = eval e2 in (TConcat(TString(s1), e2'))
+		| (TConcat(TInt(i), e2)) -> let e2' = eval e2 in (TConcat(TInt(i), e2'))
 		| (TConcat(e1, e2)) -> let e1' = eval e1 in (TConcat(e1', e2))
 
 		| (TStrLen(TString(s))) ->  TInt(String.length (rm_quotes s))
@@ -294,10 +321,9 @@ let rec eval e =
 		| (TCap(TInt(i), e2)) -> let e2' = eval e2 in TCap(TInt(i), e2')
 		| (TCap(e1, e2)) -> let e1' = eval e1 in TCap(e1', e2)
 
-		| (TKleene(TLang(l), TString(s), TInt(i))) -> TString(lst_to_str(kleene i (str_to_lst l) s))
-		| (TKleene(TLang(l), TString(s), e3)) -> let e3' = eval e3 in TKleene(TLang(l), TString(s), e3')
-		| (TKleene(TLang(l), e2, e3)) -> let e2' = eval e2 in TKleene(TLang(l), e2', e3)
-		| (TKleene(e1, e2, e3)) -> let e1' = eval e1 in TKleene(e1', e2, e3)
+		| (TKleene(TInt(i), TString(s))) -> TLang(lst_to_str (kleeneIndividual i s))
+		| (TKleene(TInt(i), e2)) -> let e2' = eval e2 in TKleene(TInt(i), e2')
+		| (TKleene(e1, e2)) -> let e1' = eval e1 in TKleene(e1', e2)
 
 		| (TConcatABC(TLang(l), TInt(i))) -> TLang(lst_to_str(concatMaster i (str_to_lst l)))
 		| (TConcatABC(TLang(l), e2)) -> let e2' = eval e2 in TConcatABC(TLang(l), e2')
@@ -325,13 +351,6 @@ let evalProg e =
 		| Eol(Eol (e1, e2), e3)  -> Eol (evalProg (Eol (e1, e2)), evalProg(e3))
 		| Eol(e1, e2) -> (Eol ((evalProg e1),(evalProg e2)))
 		| e1 -> (evalloop e)
-
-(*==== Printing methods ====*)
-let rec type_to_string tT =
-	match tT with
-		| TechnoInt -> "int"
-		| TechnoLang -> "lang"
-		| TechnoString -> "string"
 ;;
 
 let rec print_res res =

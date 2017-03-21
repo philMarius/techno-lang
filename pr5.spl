@@ -1,1 +1,1 @@
-concatABC($1, $last_line);;
+cap($last_line, ({a} . ({a, b, c} . {a, b, c})));;
