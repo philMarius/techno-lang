@@ -5,10 +5,19 @@ let postFix list letter=
 	aux [] list;;
 
 
-
+(* uncapped calculation length so struggles on long words *)
 let concat l1 l2 =
 	let rec aux l3 = function
 		| [] -> l3
+		| h :: t -> aux (union (appender l2 h) l3) t in
+	aux [] l1;;
+	
+	
+	
+(* limits the length of the calculation to 100, super fast now *)
+let concat l1 l2 =
+	let rec aux l3 = function
+		| [] -> limitLength 100 (alphabet l3)
 		| h :: t -> aux (union (appender l2 h) l3) t in
 	aux [] l1;;
 
@@ -22,7 +31,7 @@ let concatMaster n l1 =
 
 concat ["a";"b";"c"] ["a";"b";"c"];;
 
-concatMaster 20 ["a";"b";"c"];;
+concatMaster 10 ["a";"b";"c"];;
 
 
 
@@ -33,7 +42,7 @@ let rec aux = function
 | h :: t -> limitLength n (addLetter h (concatMaster length language))
 in aux inputList;;
 
-concatModular 6 ["y"] 2 ["a";"b";"c"];;
+concatModular 6 ["y"] 16 ["a";"b";"c"];;
 
 
 let kleeneIndividual n s=
