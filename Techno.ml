@@ -142,8 +142,18 @@ let add_quotes s =
 ;;
 
 (* Generate string of length l comprised of string n    --> Use String.make *)
+(* let string_repeat n s =
+	String.concat "" (Array.to_list (Array.make n (destring s)));; *)
+
+let gen_str n l = 
+	let rec aux l n acc = 
+		if n>0 then aux l (n-1) acc ^ (destring l) else ""
+in aux l n "";;
+
 let string_repeat n s =
-	String.concat "" (Array.to_list (Array.make n (destring s)));;
+	if n=0
+	then ":"
+	else gen_str n s;;
 
 (* Generate list of length n of singleton list l1 of letter s *)
 let kleene n l1 s =
