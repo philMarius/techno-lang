@@ -1,0 +1,33 @@
+let postFix list letter=
+	let rec aux acc = function
+		| [] -> acc
+		| h::t -> aux ((h^letter)::acc) t in
+	aux [] list;;
+
+
+
+let concat l1 l2 =
+	let rec aux l3 = function
+		| [] -> l3
+		| h :: t -> aux (union (appender l2 h) l3) t in
+	aux [] l1;;
+
+
+	
+let concatMaster n l1 =
+	let rec aux x l3 = 
+		if x < n then aux (x+1) (concat l1 l3) else alphabet l3
+	in aux 1 l1;;
+
+
+concat ["a";"b";"c"] ["a";"b";"c"];;
+
+concatMaster 2 ["a";"b";"c"];;
+
+
+let kleeneIndividual n s=
+	let rec aux x l2 =
+		if x < n then aux (x+1) ((addA s x) :: l2) else List.rev l2
+	in aux 0 [];;
+	
+kleeneIndividual 5 "b";;
