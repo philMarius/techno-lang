@@ -22,7 +22,18 @@ let concatMaster n l1 =
 
 concat ["a";"b";"c"] ["a";"b";"c"];;
 
-concatMaster 2 ["a";"b";"c"];;
+concatMaster 20 ["a";"b";"c"];;
+
+
+
+
+let concatModular n inputList length language=
+let rec aux = function
+| [] -> []
+| h :: t -> limitLength n (addLetter h (concatMaster length language))
+in aux inputList;;
+
+concatModular 6 ["y"] 2 ["a";"b";"c"];;
 
 
 let kleeneIndividual n s=
