@@ -36,3 +36,12 @@ parser.mli
 parser.output
 Techno.cmi
 Techno.cmo
+
+# Ignore the PDF creation files
+*.pdf
+*.css
+FINAL.md
+
+# Ignore testing
+*.txt
+PLC-Testing-files/*
