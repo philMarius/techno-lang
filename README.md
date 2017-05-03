@@ -135,6 +135,18 @@ e.g.
 ### Deprecated Functionality
 Few functions that are no longer in use but still implemented from Techno Lang 1.0.0 . It is not recommended to use them:
 - `prefixToList(TechnoString, TechnoLang);; => TechnoLang` would prefix the given string to the given set.
-- `concatABC(TechnoLang, TechnoInt);; => TechnoLang` would produce a set consisting of all variations of the given language of the given length
-## Examples
+- `concatABC(TechnoLang, TechnoInt);; => TechnoLang` would produce a set consisting of all variations of the given language of the given length.
+- `postfixToList` is a broken function, do not use.
+### Newlines and End of Files
+- Newline: `;`
+- EoF: `;;`
+### Inputting files
+Simple file input is implemented, pass in the file with `<` and access lines in the file using:
+- `$1` for line 1
+- `$last_line` for the last line in a file
 ## Known Bugs
+A short list of known bugs that will be addressed in Techno Lang 1.2.0:
+- There can only be one newline in the program or else it will fail to evaluate
+- Windows carriage return in input files cause the program to evaluate the `\r` as part of the line, e.g. will treat it as the last element in a set
+- Input files are limited to 10 lines
+## Examples
