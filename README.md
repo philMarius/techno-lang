@@ -1,4 +1,4 @@
-# Techno Lang 1.0.0
+# Techno Lang 1.1.0
 The minimalist, extensible set theory language built for ease of use.
 ## Authors
 - [Phil](https://github.com/philMarius)
@@ -29,6 +29,25 @@ Linking mysplinterpreter
 ocamlc -o mysplinterpreter str.cma parser.cmo lexer.cmo Techno.cmo mysplinterpreter.cmo
 $
 ```
-## Functions
+## The Language
+### Types
+#### TechnoLang
+Represents a language or a set of symbols.
+```
+{a, b, c, d} => TechnoLang
+```
+#### TechnoString
+Represents a string in literal form.
+```
+"string" => TechnoString
+```
+#### TechnoInt
+Represents a number in integer form.
+```
+123 => TechnoInt
+```
+### Current Functionality
+
+### Deprecated Functionality
 ## Examples
 ## Known Bugs
