@@ -41,6 +41,7 @@ Techno.cmo
 *.pdf
 *.css
 FINAL.md
+*.docx
 
 # Ignore testing
 *.txt

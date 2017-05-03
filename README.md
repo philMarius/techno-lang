@@ -1,5 +1,4 @@
-![Techno Lang](small-techno-logo.png "Techno Lang")
-# Techno Lang 1.1.0
+# ![Techno Lang](small-techno-logo.png "Techno Lang") Techno Lang v1.1.0
 The minimalist, extensible set theory language built for ease of use.
 ## Authors
 - [Phil](https://github.com/philMarius)
@@ -7,7 +6,7 @@ The minimalist, extensible set theory language built for ease of use.
 ## Installating from source
 ### Dependencies
 - [OCaml](http://ocaml.org/)
-### Installation
+### Installations
 Use the `make` command to compile the interpreter. Expected output:
 ```
 $ make
@@ -146,7 +145,7 @@ Simple file input is implemented, pass in the file with `<` and access lines in 
 - `$1` for line 1
 - `$last_line` for the last line in a file
 ## Known Bugs
-A short list of known bugs that will be addressed in Techno Lang 1.2.0:
+A short list of known bugs that will be addressed in Techno Lang v1.2.0:
 - There can only be one newline in the program or else it will fail to evaluate.
 - Windows carriage return in input files cause the program to evaluate the `\r` as part of the line, e.g. will treat it as the last element in a set.
 - Input files are limited to 10 lines.
