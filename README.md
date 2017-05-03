@@ -68,7 +68,7 @@ A more generic function that will take multiple inputs and output based on the i
 ```
 (TechnoString . TechnoString);; => TechnoString
 ```
-    * e.g. 
+  * e.g. 
 ```
 ("abc" . "xyz");; => abcxyz
 ```
@@ -76,7 +76,7 @@ A more generic function that will take multiple inputs and output based on the i
 ```
 (TechnoString . TechnoLang);; => TechnoLang
 ```
-    * e.g. 
+  * e.g. 
 ```
 ("a" . {x, y, z});; => {ax, ay, az}
 ({x, y, z} . "a");; => {xa, ya, za}
@@ -85,7 +85,7 @@ A more generic function that will take multiple inputs and output based on the i
 ```
 (TechnoLang . TechnoLang);; => TechnoLang
 ```
-    * e.g. 
+  * e.g. 
 ```
 ({a, b} . {x, y});; => {ax, ay, bx, by}
 ```
@@ -93,7 +93,7 @@ A more generic function that will take multiple inputs and output based on the i
 ```
 (TechnoLang . TechnoInt);; => TechnoLang
 ```
-    * e.g. 
+  * e.g. 
 ```
 ({a, b, c} . 2);; => {aa,ab,ac,ba,bb,bc,ca,cb,cc}
 ```
@@ -101,7 +101,7 @@ A more generic function that will take multiple inputs and output based on the i
 ```
 (TechnoString . TechnoInt);; => TechnoString
 ```
-    * e.g. 
+  * e.g. 
 ```
 ("hello" . 2);; => hellohello
 ```
