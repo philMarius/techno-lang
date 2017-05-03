@@ -1,4 +1,4 @@
-<img src="techno-logo.png" alt="Techno Lang" style="width: 100px; height: 100px;" />
+<img src="techno-logo.png" alt="Techno Lang" style="width: 100px;" />
 # Techno Lang 1.1.0
 The minimalist, extensible set theory language built for ease of use.
 ## Authors
