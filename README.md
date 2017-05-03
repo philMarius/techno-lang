@@ -105,6 +105,36 @@ A more generic function that will take multiple inputs and output based on the i
 ```
 ("hello" . 2);; => hellohello
 ```
+#### String Length
+Outputs the length of a given string.
+```
+strlen(TechnoString);; => TechnoInt
+```
+e.g.
+```
+strlen("hello");; => 5
+```
+#### Cap
+Caps a given set to a given size.
+```
+cap(TechnoInt, TechnoLang);; => TechnoLang
+```
+e.g.
+```
+cap(2, {a, b, c});; => {a, b}
+```
+#### Kleene Star
+Produces a set consisting of the given string in kleene star form.
+```
+*(TechnoInt, TechnoString);; => TechnoLang
+```
+e.g.
+```
+*(4, "a");; => {:,a,aa,aaa}
+```
 ### Deprecated Functionality
+Few functions that are no longer in use but still implemented from Techno Lang 1.0.0 . It is not recommended to use them:
+- `prefixToList(TechnoString, TechnoLang);; => TechnoLang` would prefix the given string to the given set.
+- `concatABC(TechnoLang, TechnoInt);; => TechnoLang` would produce a set consisting of all variations of the given language of the given length
 ## Examples
 ## Known Bugs
