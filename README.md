@@ -47,7 +47,28 @@ Represents a number in integer form.
 123 => TechnoInt
 ```
 ### Current Functionality
-
+Note: all functions that output a set will automatically order them in alphabetical order and remove any duplicates.
+#### Union
+Takes two sets and outputs the set consisting of the union of them.
+```
+(TechnoLang U TechnoLang) => TechnoLang
+```
+e.g.
+```
+({a, b} U {x, y}) => {a, b, x, y}
+```
+#### Intersection
+Takes two sets and outputs the set consisting of the intersection of them.
+```
+(TechnoLang N TechnoLang) => TechnoLang
+```
+#### Concatenation
+A more generic function that will take multiple inputs and output based on the input. All inputs can swap order as well.
+```
+(TechnoString . TechnoString) => TechnoString
+(TechnoString . TechnoLang) => TechnoLang
+(TechnoLang . TechnoLang) => TechnoLang
+```
 ### Deprecated Functionality
 ## Examples
 ## Known Bugs
