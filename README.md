@@ -64,11 +64,13 @@ Takes two sets and outputs the set consisting of the intersection of them.
 ```
 #### Concatenation
 A more generic function that will take multiple inputs and output based on the input. All inputs can swap order as well.
-```
+`
 (TechnoString . TechnoString) => TechnoString
 (TechnoString . TechnoLang) => TechnoLang
 (TechnoLang . TechnoLang) => TechnoLang
-```
+(TechnoLang . TechnoInt) => TechnoLang
+(TechnoString . TechnoIng) => TechnoString
+`
 ### Deprecated Functionality
 ## Examples
 ## Known Bugs
