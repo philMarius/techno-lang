@@ -51,43 +51,60 @@ Note: all functions that output a set will automatically order them in alphabeti
 #### Union
 Takes two sets and outputs the set consisting of the union of them.
 ```
-(TechnoLang U TechnoLang) => TechnoLang
+(TechnoLang U TechnoLang);; => TechnoLang
 ```
 e.g.
 ```
-({a, b} U {x, y}) => {a, b, x, y}
+({a, b} U {x, y});; => {a, b, x, y}
 ```
 #### Intersection
 Takes two sets and outputs the set consisting of the intersection of them.
 ```
-(TechnoLang N TechnoLang) => TechnoLang
+(TechnoLang N TechnoLang);; => TechnoLang
 ```
 #### Concatenation
 A more generic function that will take multiple inputs and output based on the input. All inputs can swap order as well.
 - Concatenation of two strings:
 ```
-(TechnoString . TechnoString) => TechnoString
+(TechnoString . TechnoString);; => TechnoString
 ```
 e.g. 
 ```
-("abc" . "xyz") => "abcxyz"
+("abc" . "xyz");; => abcxyz
 ```
 - Appending / prefixing of string to set:
 ```
-(TechnoString . TechnoLang) => TechnoLang
+(TechnoString . TechnoLang);; => TechnoLang
 ```
 e.g. 
 ```
-("a" . {x, y, z}) => {ax, ay, az}
-({x, y, z} . "a") => {xa, ya, za}
+("a" . {x, y, z});; => {ax, ay, az}
+({x, y, z} . "a");; => {xa, ya, za}
 ```
 - Concatenation of two sets:
-```(TechnoLang . TechnoLang) => TechnoLang```
+```
+(TechnoLang . TechnoLang);; => TechnoLang
+```
 e.g.
-`({a, b} . {x, y}) => {ax, ay, bx, by}`
-- 
-`(TechnoLang . TechnoInt) => TechnoLang`
-`(TechnoString . TechnoIng) => TechnoString`
+```
+({a, b} . {x, y});; => {ax, ay, bx, by}
+```
+- Outputs a set with consisting of all variation of symbols of length TechnoInt:
+```
+(TechnoLang . TechnoInt);; => TechnoLang
+```
+e.g.
+```
+({a, b, c} . 2);; => {aa,ab,ac,ba,bb,bc,ca,cb,cc}
+```
+- String repetition:
+```
+(TechnoString . TechnoInt);; => TechnoString
+```
+e.g.
+```
+("hello" . 2);; => hellohello
+```
 ### Deprecated Functionality
 ## Examples
 ## Known Bugs
