@@ -65,16 +65,24 @@ Takes two sets and outputs the set consisting of the intersection of them.
 #### Concatenation
 A more generic function that will take multiple inputs and output based on the input. All inputs can swap order as well.
 - Concatenation of two strings:
-`(TechnoString . TechnoString) => TechnoString`
+```
+(TechnoString . TechnoString) => TechnoString
+```
 e.g. 
-`("abc" . "xyz") => "abcxyz"`
+```
+("abc" . "xyz") => "abcxyz"
+```
 - Appending / prefixing of string to set:
-`(TechnoString . TechnoLang) => TechnoLang`
+```
+(TechnoString . TechnoLang) => TechnoLang
+```
 e.g. 
-`("a" . {x, y, z}) => {ax, ay, az}`
-`({x, y, z} . "a") => {xa, ya, za}`
+```
+("a" . {x, y, z}) => {ax, ay, az}
+({x, y, z} . "a") => {xa, ya, za}
+```
 - Concatenation of two sets:
-`(TechnoLang . TechnoLang) => TechnoLang`
+```(TechnoLang . TechnoLang) => TechnoLang```
 e.g.
 `({a, b} . {x, y}) => {ax, ay, bx, by}`
 - 
