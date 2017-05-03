@@ -64,7 +64,7 @@ Takes two sets and outputs the set consisting of the intersection of them.
 ```
 #### Concatenation
 A more generic function that will take multiple inputs and output based on the input. All inputs can swap order as well.
-- Concatenation of two strings:
+##### Concatenation of two strings:
 ```
 (TechnoString . TechnoString);; => TechnoString
 ```
@@ -72,7 +72,7 @@ A more generic function that will take multiple inputs and output based on the i
 ```
 ("abc" . "xyz");; => abcxyz
 ```
-- Appending / prefixing of string to set:
+##### Appending / prefixing of string to set:
 ```
 (TechnoString . TechnoLang);; => TechnoLang
 ```
@@ -81,7 +81,7 @@ A more generic function that will take multiple inputs and output based on the i
 ("a" . {x, y, z});; => {ax, ay, az}
 ({x, y, z} . "a");; => {xa, ya, za}
 ```
-- Concatenation of two sets:
+##### Concatenation of two sets:
 ```
 (TechnoLang . TechnoLang);; => TechnoLang
 ```
@@ -89,7 +89,7 @@ A more generic function that will take multiple inputs and output based on the i
 ```
 ({a, b} . {x, y});; => {ax, ay, bx, by}
 ```
-- Outputs a set with consisting of all variation of symbols of length TechnoInt:
+##### Outputs a set with consisting of all variation of symbols of length TechnoInt:
 ```
 (TechnoLang . TechnoInt);; => TechnoLang
 ```
@@ -97,7 +97,7 @@ A more generic function that will take multiple inputs and output based on the i
 ```
 ({a, b, c} . 2);; => {aa,ab,ac,ba,bb,bc,ca,cb,cc}
 ```
-- String repetition:
+##### String repetition:
 ```
 (TechnoString . TechnoInt);; => TechnoString
 ```
