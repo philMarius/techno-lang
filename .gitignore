@@ -21,3 +21,18 @@ setup.log
 
 # test files
 stdintest.*
+
+# Interpreter specific files
+lexer.cmi
+lexer.cmo
+lexer.ml
+mysplinterpreter
+mysplinterpreter.cmi
+mysplinterpreter.cmo
+parser.cmi
+parser.cmo
+parser.ml
+parser.mli
+parser.output
+Techno.cmi
+Techno.cmo
