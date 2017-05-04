@@ -49,3 +49,4 @@ PLC-Testing-files/*
 
 # Ignore submission
 *.zip
+group.txt
