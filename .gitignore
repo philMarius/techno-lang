@@ -46,3 +46,6 @@ FINAL.md
 # Ignore testing
 *.txt
 PLC-Testing-files/*
+
+# Ignore submission
+*.zip
