@@ -144,4 +144,34 @@ A short list of known bugs that will be addressed in Techno Lang v1.2.0:
 - Techno Lang has ambigious error messages
 - Techno Lang lacks variable functionality, looping and environments (would have loved to make this Turing Complete)
 - The interpreter fails to run on Windows OCaml installations, requires Bash on Windows to run
-## Appendices and further examples of code
+## Appendix of code examples
+1.0 - Concatenating a TechnoSet `{x}` with all variances of `{a, b, c}` of up to length 3
+```
+({x} . ({a, b, c} U (({a, b, c} . 2) U ({a, b, c} . 3))));;
+```
+1.1 - Output of above function
+```
+{xa,xaa,xaaa,xaab,xaac,xab,xaba,xabb,xabc,xac,xaca,xacb,xacc,xb,xba,xbaa,xbab,xbac,xbb,xbba,xbbb,xbbc,xbc,xbca,xbcb,xbcc,xc,xca,xcaa,xcab,xcac,xcb,xcba,xcbb,xcbc,xcc,xcca,xccb,xccc}
+```
+2.0 - Hello world application
+```
+("Hello " . "world");;
+```
+2.1 - Output of above function
+```
+Hello world
+```
+3.0 - Input file
+```
+{a, b, c, d}
+{a, x, d, c}
+2
+```
+3.1 - Intersection of TechnoSet 1 and 2 and caps answer
+```
+cap($last_line ($1 N $2));;
+```
+3.2 - Output of above function
+```
+{a,c}
+```

@@ -1,1 +1,1 @@
-(4 U "hello");;
+cap($last_line, ($1 N $2));;
